@@ -21,14 +21,12 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="bg-primary p-2 rounded-lg">
-              <Tractor className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold text-primary">KisanSeva</span>
-              <span className="text-xs text-secondary font-medium">Plus</span>
-            </div>
+          <Link to="/" className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/7c821560-56eb-4079-8f44-e64f31f694dd.png" 
+              alt="KisanSeva Plus Logo" 
+              className="h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -52,10 +50,10 @@ const Header = () => {
           <div className="hidden lg:flex items-center space-x-4">
             <div className="flex items-center space-x-2 text-sm text-muted-foreground">
               <Phone className="h-4 w-4" />
-              <span>+91 98765 43210</span>
+              <span>+91 9608792602</span>
             </div>
-            <Button variant="outline" size="sm">
-              Login
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/login">Login</Link>
             </Button>
           </div>
 
@@ -92,12 +90,12 @@ const Header = () => {
                 </Link>
               ))}
               <div className="pt-4 border-t border-border">
-                <Button className="w-full mb-2" size="sm">
-                  Login
+                <Button className="w-full mb-2" size="sm" asChild>
+                  <Link to="/login">Login</Link>
                 </Button>
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                   <Phone className="h-4 w-4" />
-                  <span>+91 98765 43210</span>
+                  <span>+91 9608792602</span>
                 </div>
               </div>
             </nav>

@@ -36,6 +36,7 @@ export default {
 					light: 'hsl(var(--secondary-light))',
 					dark: 'hsl(var(--secondary-dark))'
 				},
+				'footer-bg': 'hsl(var(--footer-bg))',
 				success: {
 					DEFAULT: 'hsl(var(--success))',
 					foreground: 'hsl(var(--success-foreground))'

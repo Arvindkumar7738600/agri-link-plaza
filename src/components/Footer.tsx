@@ -3,19 +3,17 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-primary text-primary-foreground mt-20">
+    <footer className="bg-footer-bg text-white mt-20">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
-            <Link to="/" className="flex items-center space-x-2 mb-4">
-              <div className="bg-primary-foreground p-2 rounded-lg">
-                <Tractor className="h-6 w-6 text-primary" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-bold">KisanSeva Plus</span>
-                <span className="text-sm opacity-90">Connecting Agriculture</span>
-              </div>
+            <Link to="/" className="flex items-center space-x-3 mb-4">
+              <img 
+                src="/lovable-uploads/7c821560-56eb-4079-8f44-e64f31f694dd.png" 
+                alt="KisanSeva Plus Logo" 
+                className="h-8 w-auto"
+              />
             </Link>
             <p className="text-sm opacity-90 mb-4 max-w-md">
               Empowering farmers with technology. Connect with equipment owners, 
@@ -46,7 +44,7 @@ const Footer = () => {
             <div className="space-y-3 text-sm opacity-90">
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
-                <span>+91 98765 43210</span>
+                <span>+91 9608792602</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
@@ -54,7 +52,7 @@ const Footer = () => {
               </div>
               <div className="flex items-start space-x-2">
                 <MapPin className="h-4 w-4 mt-0.5" />
-                <span>123 Agriculture Hub,<br />New Delhi, India 110001</span>
+                <span>KisanSeva Plus Complex,<br />Ranchi, Jharkhand 834002</span>
               </div>
             </div>
           </div>

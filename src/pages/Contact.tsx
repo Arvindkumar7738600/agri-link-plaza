@@ -9,7 +9,7 @@ const Contact = () => {
     {
       icon: Phone,
       title: "Phone Support",
-      details: "+91 98765 43210",
+      details: "+91 9608792602",
       description: "24/7 customer support available",
       action: "Call Now"
     },
@@ -23,7 +23,7 @@ const Contact = () => {
     {
       icon: MapPin,
       title: "Head Office",
-      details: "123 Agriculture Hub, New Delhi",
+      details: "KisanSeva Plus Complex, Ranchi, Jharkhand",
       description: "Visit us during business hours",
       action: "Get Directions"
     },
@@ -184,11 +184,11 @@ const Contact = () => {
                     <div className="space-y-2 text-sm">
                       <div className="flex items-start space-x-2">
                         <MapPin className="h-4 w-4 text-primary mt-0.5" />
-                        <span>123 Agriculture Hub, Connaught Place, New Delhi - 110001</span>
+                        <span>KisanSeva Plus Complex, Ranchi, Jharkhand - 834002</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Phone className="h-4 w-4 text-primary" />
-                        <span>+91 98765 43210</span>
+                        <span>+91 9608792602</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Clock className="h-4 w-4 text-primary" />

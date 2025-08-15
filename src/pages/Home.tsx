@@ -53,7 +53,7 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-primary/90 to-secondary/90 text-primary-foreground overflow-hidden">
+      <section className="relative text-primary-foreground overflow-hidden" style={{background: 'linear-gradient(90deg, #9ebd13 0%, #008552 100%)'}}>
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -67,12 +67,12 @@ const Home = () => {
           <div className="max-w-3xl">
             <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">
               Connecting Farmers with
-              <span className="text-accent block">Modern Agriculture</span>
+              <span className="text-accent block">Agricultural Solutions</span>
             </h1>
             <p className="text-lg lg:text-xl opacity-90 mb-8 leading-relaxed">
-              India's most trusted platform for agricultural equipment rental, 
-              farmer hiring, and farming services. Join thousands of farmers 
-              modernizing agriculture together.
+              Rent tractors, hire skilled farmers, and access agricultural equipment across India. 
+              Making farming efficient and profitable for everyone.
+              <br /><span className="text-accent font-medium">Built by student entrepreneurs from IIT Madras who understand farming communities</span>
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" variant="secondary" asChild className="text-lg px-8">

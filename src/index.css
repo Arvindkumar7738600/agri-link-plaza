@@ -17,16 +17,22 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    /* Agricultural Green Theme */
-    --primary: 84 44% 49%;
+    /* Agricultural Green Theme - Updated Gradient */
+    --primary: 72 77% 40%; /* #9ebd13 converted to HSL */
     --primary-foreground: 0 0% 100%;
-    --primary-light: 84 44% 65%;
-    --primary-dark: 84 44% 35%;
+    --primary-light: 72 77% 55%;
+    --primary-dark: 72 77% 25%;
 
-    --secondary: 121 40% 49%;
+    --secondary: 153 100% 27%; /* #008552 converted to HSL */
     --secondary-foreground: 0 0% 100%;
-    --secondary-light: 121 40% 65%;
-    --secondary-dark: 121 40% 35%;
+    --secondary-light: 153 100% 40%;
+    --secondary-dark: 153 100% 15%;
+
+    /* Main gradient theme */
+    --gradient-primary: linear-gradient(90deg, #9ebd13 0%, #008552 100%);
+    
+    /* Footer dark theme */
+    --footer-bg: 217 33% 11%; /* rgb(15, 23, 42) converted to HSL */
 
     --success: 120 60% 50%;
     --success-foreground: 0 0% 100%;

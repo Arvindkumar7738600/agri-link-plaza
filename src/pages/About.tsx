@@ -27,22 +27,22 @@ const About = () => {
 
   const team = [
     {
-      name: "Rajesh Kumar",
-      role: "Founder & CEO",
-      experience: "15+ years in Agriculture",
-      description: "Former agricultural officer with deep understanding of farmer challenges"
+      name: "Arvind Kumar",
+      role: "Founder",
+      experience: "1st-year Data Science, IIT Madras",
+      description: "From Ranchi, Jharkhand. Passionate about combining technology with agriculture to solve farmers' real-life problems. Hafto ka kaam, ganto mein!"
     },
     {
-      name: "Priya Sharma",
-      role: "CTO",
-      experience: "12+ years in Technology",
-      description: "Tech expert focused on building farmer-friendly digital solutions"
+      name: "Aman Raj",
+      role: "Co-Founder",
+      experience: "1st-year Data Science, IIT Madras",
+      description: "From Ranchi, Jharkhand. Young visionary working to transform Indian agriculture through technology and make farming easier and more profitable."
     },
     {
-      name: "Amit Singh",
-      role: "Head of Operations",
-      experience: "10+ years in Logistics",
-      description: "Specialist in agricultural supply chain and equipment management"
+      name: "Priyanshu Kumar",
+      role: "Team Member",
+      experience: "Student at IIT Patna",
+      description: "Dedicated team member contributing to our mission of modernizing agriculture and empowering rural communities with technology."
     }
   ];
 
@@ -157,8 +157,7 @@ const About = () => {
               Meet Our Team
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Passionate individuals with deep agricultural expertise and 
-              technology background working to transform farming in India.
+              Young visionaries from IIT Madras working to transform Indian agriculture through technology.
             </p>
           </div>
 
