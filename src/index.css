@@ -30,6 +30,15 @@ All colors MUST be HSL.
 
     /* Main gradient theme */
     --gradient-primary: linear-gradient(90deg, #9ebd13 0%, #008552 100%);
+    --gradient-light: linear-gradient(135deg, #f8fffe 0%, #eef7ed 100%);
+    --gradient-section: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+    
+    /* Modern background themes */
+    --bg-light-green: 120 60% 97%;
+    --bg-card: 0 0% 100%;
+    --bg-section-alt: 120 20% 98%;
+    --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     
     /* Footer dark theme */
     --footer-bg: 217 33% 11%; /* rgb(15, 23, 42) converted to HSL */

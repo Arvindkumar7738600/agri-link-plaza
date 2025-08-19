@@ -87,12 +87,12 @@ const Booking = () => {
   return (
     <div className="min-h-screen pt-8">
       {/* Header */}
-      <section className="py-12 bg-gradient-to-r from-primary/10 to-secondary/10">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-4 text-center">
+      <section className="py-12" style={{background: 'var(--gradient-primary)'}}>
+        <div className="container mx-auto px-4 text-primary-foreground">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-center">
             Book Agricultural Equipment
           </h1>
-          <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto">
+          <p className="text-lg opacity-90 text-center max-w-2xl mx-auto">
             Find and rent tractors, harvesters, and other farming equipment 
             from verified owners near your location.
           </p>
@@ -100,7 +100,7 @@ const Booking = () => {
       </section>
 
       {/* Search & Filters */}
-      <section className="py-8 border-b border-border">
+      <section className="py-8 border-b border-border" style={{background: 'var(--gradient-light)'}}>
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-4 items-center">
             {/* Location Search */}
@@ -123,6 +123,7 @@ const Booking = () => {
                   size="sm"
                   onClick={() => setSelectedCategory(category.id)}
                   className="whitespace-nowrap"
+                  style={selectedCategory === category.id ? {background: 'var(--gradient-primary)'} : {}}
                 >
                   {category.label}
                 </Button>
@@ -130,7 +131,7 @@ const Booking = () => {
             </div>
 
             {/* Search Button */}
-            <Button className="flex items-center space-x-2">
+            <Button className="flex items-center space-x-2" style={{background: 'var(--gradient-primary)'}}>
               <Search className="h-4 w-4" />
               <span>Search</span>
             </Button>
@@ -139,7 +140,7 @@ const Booking = () => {
       </section>
 
       {/* Equipment Listings */}
-      <section className="py-12">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold text-foreground">
@@ -153,7 +154,7 @@ const Booking = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredEquipment.map((item) => (
-              <Card key={item.id} className="hover:shadow-lg transition-shadow">
+              <Card key={item.id} className="hover:shadow-elevated transition-shadow bg-card">
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -224,6 +225,7 @@ const Booking = () => {
                       className="flex-1" 
                       disabled={!item.available}
                       variant={item.available ? "default" : "secondary"}
+                      style={item.available ? {background: 'var(--gradient-primary)'} : {}}
                     >
                       {item.available ? "Book Now" : "Not Available"}
                     </Button>
@@ -246,7 +248,7 @@ const Booking = () => {
       </section>
 
       {/* Quick Stats */}
-      <section className="py-12 bg-muted/30">
+      <section className="py-12" style={{background: 'var(--gradient-section)'}}>
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
@@ -270,8 +272,8 @@ const Booking = () => {
       </section>
 
       {/* Help Section */}
-      <section className="py-12 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-12" style={{background: 'var(--gradient-primary)'}}>
+        <div className="container mx-auto px-4 text-center text-primary-foreground">
           <h2 className="text-2xl font-bold mb-4">Need Help with Booking?</h2>
           <p className="text-lg opacity-90 mb-6 max-w-2xl mx-auto">
             Our support team is available 24/7 to help you find the right 
@@ -283,7 +285,7 @@ const Booking = () => {
               <span>24/7 Support</span>
             </Button>
             <Button variant="outline" size="lg" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-              Call +91 98765 43210
+              Call +91 9608792602
             </Button>
           </div>
         </div>

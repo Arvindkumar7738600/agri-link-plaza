@@ -58,12 +58,12 @@ const Contact = () => {
   return (
     <div className="min-h-screen pt-8">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-primary/10 to-secondary/10">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
+      <section className="py-20" style={{background: 'var(--gradient-primary)'}}>
+        <div className="container mx-auto px-4 text-center text-primary-foreground">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-6">
             Contact Us
           </h1>
-          <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg lg:text-xl opacity-90 max-w-2xl mx-auto">
             Have questions or need support? Our dedicated team is here to help 
             you with all your agricultural service needs.
           </p>
@@ -71,13 +71,13 @@ const Contact = () => {
       </section>
 
       {/* Contact Information */}
-      <section className="py-20">
+      <section className="py-20" style={{background: 'var(--gradient-light)'}}>
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {contactInfo.map((info, index) => {
               const IconComponent = info.icon;
               return (
-                <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                <Card key={index} className="text-center hover:shadow-elevated transition-shadow bg-card">
                   <CardHeader className="pb-4">
                     <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                       <IconComponent className="h-8 w-8 text-primary" />
@@ -103,7 +103,7 @@ const Contact = () => {
               <h2 className="text-3xl font-bold text-foreground mb-6">
                 Send us a Message
               </h2>
-              <Card>
+              <Card className="bg-card shadow-elevated">
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <MessageSquare className="h-5 w-5" />
@@ -160,7 +160,7 @@ const Contact = () => {
                     />
                   </div>
                   
-                  <Button className="w-full" size="lg">
+                  <Button className="w-full" size="lg" style={{background: 'var(--gradient-primary)'}}>
                     <Send className="h-4 w-4 mr-2" />
                     Send Message
                   </Button>
@@ -175,9 +175,9 @@ const Contact = () => {
               </h2>
               
               <div className="space-y-6">
-                <Card>
+                <Card className="bg-card shadow-elevated">
                   <CardHeader>
-                    <CardTitle className="text-xl">Head Office - Delhi</CardTitle>
+                    <CardTitle className="text-xl">Head Office - Ranchi</CardTitle>
                     <CardDescription>Main headquarters and customer service center</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -198,7 +198,7 @@ const Contact = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-card shadow-elevated">
                   <CardHeader>
                     <CardTitle className="text-xl">Regional Office - Punjab</CardTitle>
                     <CardDescription>Northern region operations center</CardDescription>
@@ -221,7 +221,7 @@ const Contact = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-card shadow-elevated">
                   <CardHeader>
                     <CardTitle className="text-xl">Regional Office - Maharashtra</CardTitle>
                     <CardDescription>Western region operations center</CardDescription>
@@ -250,7 +250,7 @@ const Contact = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
@@ -263,7 +263,7 @@ const Contact = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
             {faqs.map((faq, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
+              <Card key={index} className="hover:shadow-elevated transition-shadow bg-card">
                 <CardHeader>
                   <CardTitle className="text-lg">{faq.question}</CardTitle>
                 </CardHeader>
@@ -296,7 +296,7 @@ const Contact = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="secondary" size="lg" className="flex items-center space-x-2">
               <Phone className="h-5 w-5" />
-              <span>Emergency: +91 98765 00000</span>
+              <span>Emergency: +91 9608792602</span>
             </Button>
           </div>
         </div>

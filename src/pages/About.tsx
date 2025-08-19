@@ -1,5 +1,7 @@
 import { Target, Eye, Award, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const About = () => {
   const values = [
@@ -49,13 +51,13 @@ const About = () => {
   return (
     <div className="min-h-screen pt-8">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-primary/10 to-secondary/10">
+      <section className="py-20" style={{background: 'var(--gradient-primary)'}}>
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
+          <div className="max-w-4xl mx-auto text-center text-primary-foreground">
+            <h1 className="text-4xl lg:text-5xl font-bold mb-6">
               About KisanSeva Plus
             </h1>
-            <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
+            <p className="text-lg lg:text-xl opacity-90 leading-relaxed">
               Founded by farmers, for farmers. KisanSeva Plus bridges the gap between 
               traditional farming and modern technology, creating opportunities for 
               agricultural growth across India.
@@ -65,7 +67,7 @@ const About = () => {
       </section>
 
       {/* Story Section */}
-      <section className="py-20">
+      <section className="py-20" style={{background: 'var(--gradient-light)'}}>
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -88,24 +90,24 @@ const About = () => {
                 </p>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-primary/20 to-secondary/20 p-8 rounded-2xl">
-              <h3 className="text-2xl font-bold text-foreground mb-6">Impact Numbers</h3>
+            <div className="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-primary-foreground shadow-elevated">
+              <h3 className="text-2xl font-bold mb-6">Impact Numbers</h3>
               <div className="grid grid-cols-2 gap-6">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-2">₹50Cr+</div>
-                  <div className="text-sm text-muted-foreground">Equipment Bookings</div>
+                  <div className="text-3xl font-bold mb-2">₹50Cr+</div>
+                  <div className="text-sm opacity-90">Equipment Bookings</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-secondary mb-2">2L+</div>
-                  <div className="text-sm text-muted-foreground">Farming Hours</div>
+                  <div className="text-3xl font-bold mb-2">2L+</div>
+                  <div className="text-sm opacity-90">Farming Hours</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-2">500+</div>
-                  <div className="text-sm text-muted-foreground">Villages Reached</div>
+                  <div className="text-3xl font-bold mb-2">500+</div>
+                  <div className="text-sm opacity-90">Villages Reached</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-secondary mb-2">95%</div>
-                  <div className="text-sm text-muted-foreground">Return Rate</div>
+                  <div className="text-3xl font-bold mb-2">95%</div>
+                  <div className="text-sm opacity-90">Return Rate</div>
                 </div>
               </div>
             </div>
@@ -114,7 +116,7 @@ const About = () => {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
@@ -130,7 +132,7 @@ const About = () => {
             {values.map((value, index) => {
               const IconComponent = value.icon;
               return (
-                <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                <Card key={index} className="text-center hover:shadow-elevated transition-shadow bg-card">
                   <CardHeader className="pb-4">
                     <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                       <IconComponent className="h-8 w-8 text-primary" />
@@ -150,7 +152,7 @@ const About = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-20">
+      <section className="py-20" style={{background: 'var(--gradient-section)'}}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
@@ -163,7 +165,7 @@ const About = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {team.map((member, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+              <Card key={index} className="text-center hover:shadow-elevated transition-shadow bg-card">
                 <CardHeader>
                   <div className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-full mx-auto mb-4 flex items-center justify-center">
                     <span className="text-2xl font-bold text-primary-foreground">
@@ -186,8 +188,8 @@ const About = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-20" style={{background: 'var(--gradient-primary)'}}>
+        <div className="container mx-auto px-4 text-center text-primary-foreground">
           <h2 className="text-3xl lg:text-4xl font-bold mb-6">
             Join Our Mission
           </h2>
@@ -197,12 +199,12 @@ const About = () => {
             opportunities, we welcome you to our community.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-secondary text-secondary-foreground px-8 py-3 rounded-lg font-medium hover:bg-secondary/90 transition-colors">
-              Become a Partner
-            </button>
-            <button className="border border-primary-foreground text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary-foreground hover:text-primary transition-colors">
-              Contact Us
-            </button>
+            <Button variant="secondary" size="lg" asChild>
+              <Link to="/signup">Become a Partner</Link>
+            </Button>
+            <Button variant="outline" size="lg" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" asChild>
+              <Link to="/contact">Contact Us</Link>
+            </Button>
           </div>
         </div>
       </section>

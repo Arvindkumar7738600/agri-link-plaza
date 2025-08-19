@@ -84,12 +84,12 @@ const Services = () => {
   return (
     <div className="min-h-screen pt-8">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-primary/10 to-secondary/10">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
+      <section className="py-20" style={{background: 'var(--gradient-primary)'}}>
+        <div className="container mx-auto px-4 text-center text-primary-foreground">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-6">
             Our Services
           </h1>
-          <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg lg:text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">
             Comprehensive agricultural solutions designed to support farmers 
             at every stage of their farming journey, from equipment rental 
             to skilled workforce hiring.
@@ -98,13 +98,13 @@ const Services = () => {
       </section>
 
       {/* Main Services */}
-      <section className="py-20">
+      <section className="py-20" style={{background: 'var(--gradient-light)'}}>
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {mainServices.map((service, index) => {
               const IconComponent = service.icon;
               return (
-                <Card key={index} className="hover:shadow-xl transition-shadow duration-300">
+                <Card key={index} className="hover:shadow-elevated transition-shadow duration-300 bg-card">
                   <CardHeader className="text-center pb-4">
                     <div className="bg-primary/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
                       <IconComponent className="h-10 w-10 text-primary" />
@@ -130,7 +130,7 @@ const Services = () => {
                       <div className="text-sm text-muted-foreground">Prices vary by location and duration</div>
                     </div>
 
-                    <Button className="w-full" size="lg" asChild>
+                    <Button className="w-full" size="lg" asChild style={{background: 'var(--gradient-primary)'}}>
                       <Link to={service.link}>
                         Get Started
                       </Link>
@@ -144,7 +144,7 @@ const Services = () => {
       </section>
 
       {/* Additional Services */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
@@ -160,7 +160,7 @@ const Services = () => {
             {additionalServices.map((service, index) => {
               const IconComponent = service.icon;
               return (
-                <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                <Card key={index} className="text-center hover:shadow-elevated transition-shadow bg-card">
                   <CardHeader className="pb-4">
                     <div className="bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                       <IconComponent className="h-8 w-8 text-secondary" />
@@ -180,7 +180,7 @@ const Services = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-20">
+      <section className="py-20" style={{background: 'var(--gradient-section)'}}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
@@ -210,8 +210,8 @@ const Services = () => {
       </section>
 
       {/* Pricing Plans */}
-      <section className="py-20 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4">
+      <section className="py-20" style={{background: 'var(--gradient-primary)'}}>
+        <div className="container mx-auto px-4 text-primary-foreground">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               Transparent Pricing

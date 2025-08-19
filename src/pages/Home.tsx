@@ -91,7 +91,7 @@ const Home = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20" style={{background: 'var(--gradient-light)'}}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
@@ -107,7 +107,7 @@ const Home = () => {
             {services.map((service, index) => {
               const IconComponent = service.icon;
               return (
-                <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-border hover:border-primary/30">
+                <Card key={index} className="group hover:shadow-elevated transition-all duration-300 border-border hover:border-primary/30 bg-card">
                   <CardHeader className="text-center pb-4">
                     <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
                       <IconComponent className="h-8 w-8 text-primary group-hover:text-primary-foreground" />
@@ -134,7 +134,7 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -166,7 +166,7 @@ const Home = () => {
             </div>
 
             <div className="relative">
-              <div className="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-primary-foreground">
+              <div className="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-primary-foreground shadow-elevated">
                 <h3 className="text-2xl font-bold mb-6">Ready to Get Started?</h3>
                 <div className="space-y-4 mb-6">
                   <div className="flex items-center space-x-3">
@@ -182,8 +182,8 @@ const Home = () => {
                     <span>Start booking immediately</span>
                   </div>
                 </div>
-                <Button variant="secondary" size="lg" className="w-full">
-                  Join KisanSeva Plus Today
+                <Button variant="secondary" size="lg" className="w-full" asChild>
+                  <Link to="/signup">Join KisanSeva Plus Today</Link>
                 </Button>
               </div>
             </div>
@@ -192,9 +192,9 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-primary text-primary-foreground">
+      <section className="py-20" style={{background: 'var(--gradient-primary)'}}>
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center text-primary-foreground">
             <div>
               <div className="text-4xl font-bold mb-2">10,000+</div>
               <div className="text-lg opacity-90">Active Farmers</div>

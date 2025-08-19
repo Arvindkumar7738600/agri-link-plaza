@@ -15,10 +15,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen pt-8 flex items-center justify-center" style={{background: 'linear-gradient(135deg, #9ebd13 0%, #008552 100%)'}}>
+    <div className="min-h-screen pt-8 flex items-center justify-center" style={{background: 'var(--gradient-light)'}}>
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-md mx-auto">
-          <Card className="shadow-2xl">
+          <Card className="shadow-elevated bg-card border-0">
             <CardHeader className="text-center">
               <div className="mb-6">
                 <img 
@@ -54,7 +54,7 @@ const Login = () => {
                   <Button 
                     className="w-full" 
                     size="lg"
-                    style={{background: 'linear-gradient(90deg, #9ebd13 0%, #008552 100%)'}}
+                    style={{background: 'var(--gradient-primary)'}}
                     onClick={handleSendOtp}
                   >
                     Send OTP <ArrowRight className="ml-2 h-4 w-4" />
@@ -81,7 +81,7 @@ const Login = () => {
                   <Button 
                     className="w-full" 
                     size="lg"
-                    style={{background: 'linear-gradient(90deg, #9ebd13 0%, #008552 100%)'}}
+                    style={{background: 'var(--gradient-primary)'}}
                   >
                     Verify & Login
                   </Button>
