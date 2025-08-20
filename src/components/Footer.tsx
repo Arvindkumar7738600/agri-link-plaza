@@ -22,7 +22,14 @@ const Footer = () => {
             <div className="flex space-x-4">
               <Facebook className="h-5 w-5 opacity-70 hover:opacity-100 cursor-pointer transition-opacity" />
               <Twitter className="h-5 w-5 opacity-70 hover:opacity-100 cursor-pointer transition-opacity" />
-              <Instagram className="h-5 w-5 opacity-70 hover:opacity-100 cursor-pointer transition-opacity" />
+              <a 
+                href="https://www.instagram.com/thee_motivational/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:opacity-100 transition-opacity"
+              >
+                <Instagram className="h-5 w-5 opacity-70 hover:opacity-100 cursor-pointer transition-opacity" />
+              </a>
             </div>
           </div>
 
@@ -48,7 +55,12 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span>info@kisansevaplus.com</span>
+                <a 
+                  href="mailto:info.Kisansevaplus@gmail.com" 
+                  className="hover:opacity-100 transition-opacity"
+                >
+                  info.Kisansevaplus@gmail.com
+                </a>
               </div>
               <div className="flex items-start space-x-2">
                 <MapPin className="h-4 w-4 mt-0.5" />

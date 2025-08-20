@@ -80,7 +80,7 @@ const Home = () => {
                   Book Equipment <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild className="text-lg px-8 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+              <Button size="lg" variant="secondary" asChild className="text-lg px-8 bg-white/20 text-primary-foreground border-2 border-white/30 hover:bg-white hover:text-primary">
                 <Link to="/farmers">
                   Hire Farmers
                 </Link>

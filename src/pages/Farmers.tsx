@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, MapPin, Star, User, Award, Clock } from "lucide-react";
+import { Search, Filter, MapPin, Star, Clock, Phone, User, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,94 +13,131 @@ const Farmers = () => {
     { id: "all", label: "All Skills" },
     { id: "tractor-operator", label: "Tractor Operator" },
     { id: "harvesting", label: "Harvesting" },
+    { id: "planting", label: "Planting & Sowing" },
     { id: "irrigation", label: "Irrigation" },
-    { id: "general-farming", label: "General Farming" },
+    { id: "pesticide", label: "Pesticide Application" },
   ];
 
   const farmers = [
     {
       id: 1,
-      name: "Ramesh Patel",
-      skill: "tractor-operator",
-      experience: "12 years",
-      rate: "₹500/day",
-      location: "Gurgaon, Haryana",
+      name: "Ramesh Kumar",
+      skills: ["tractor-operator", "planting"],
+      experience: "8 years",
+      hourlyRate: "₹150/hour",
+      dailyRate: "₹1,200/day",
+      location: "Ranchi, Jharkhand",
       distance: "3.2 km",
       rating: 4.9,
       reviews: 156,
       available: true,
-      languages: ["Hindi", "English", "Gujarati"],
-      specializations: ["Heavy Machinery", "Land Preparation", "Crop Harvesting"],
-      completedJobs: 342
+      languages: ["Hindi", "English"],
+      verified: true,
+      specialties: ["Precision Farming", "Organic Methods", "Soil Management"]
     },
     {
       id: 2,
-      name: "Suresh Kumar",
-      skill: "harvesting",
-      experience: "8 years",
-      rate: "₹400/day",
-      location: "Faridabad, Haryana", 
-      distance: "7.5 km",
-      rating: 4.7,
-      reviews: 89,
+      name: "Sunil Singh",
+      skills: ["harvesting", "tractor-operator"],
+      experience: "12 years",
+      hourlyRate: "₹180/hour",
+      dailyRate: "₹1,400/day",
+      location: "Jamshedpur, Jharkhand",
+      distance: "5.8 km",
+      rating: 4.8,
+      reviews: 203,
       available: true,
-      languages: ["Hindi", "Punjabi"],
-      specializations: ["Wheat Harvesting", "Rice Cutting", "Quality Control"],
-      completedJobs: 218
+      languages: ["Hindi", "Bengali"],
+      verified: true,
+      specialties: ["Combine Operation", "Crop Management", "Equipment Maintenance"]
     },
     {
       id: 3,
-      name: "Priya Sharma",
-      skill: "irrigation",
+      name: "Vikash Yadav",
+      skills: ["irrigation", "pesticide"],
       experience: "6 years",
-      rate: "₹350/day",
-      location: "Palwal, Haryana",
-      distance: "12.8 km",
-      rating: 4.8,
-      reviews: 127,
-      available: false,
-      languages: ["Hindi", "English"],
-      specializations: ["Drip Irrigation", "Water Management", "System Maintenance"],
-      completedJobs: 163
+      hourlyRate: "₹120/hour",
+      dailyRate: "₹950/day",
+      location: "Dhanbad, Jharkhand",
+      distance: "8.5 km",
+      rating: 4.7,
+      reviews: 89,
+      available: true,
+      languages: ["Hindi"],
+      verified: true,
+      specialties: ["Drip Irrigation", "Pest Control", "Fertilizer Application"]
     },
     {
       id: 4,
-      name: "Mohan Singh",
-      skill: "general-farming",
-      experience: "15 years",
-      rate: "₹450/day",
-      location: "Sonipat, Haryana",
-      distance: "9.1 km",
+      name: "Priya Devi",
+      skills: ["planting", "harvesting"],
+      experience: "5 years",
+      hourlyRate: "₹130/hour",
+      dailyRate: "₹1,000/day",
+      location: "Bokaro, Jharkhand",
+      distance: "10.2 km",
       rating: 4.6,
-      reviews: 203,
+      reviews: 127,
       available: true,
-      languages: ["Hindi", "Punjabi", "English"],
-      specializations: ["Crop Planning", "Soil Management", "Pest Control"],
-      completedJobs: 456
+      languages: ["Hindi", "English"],
+      verified: true,
+      specialties: ["Vegetable Farming", "Seed Selection", "Post Harvest"]
+    },
+    {
+      id: 5,
+      name: "Manoj Sharma",
+      skills: ["tractor-operator", "irrigation"],
+      experience: "10 years",
+      hourlyRate: "₹160/hour",
+      dailyRate: "₹1,300/day",
+      location: "Hazaribagh, Jharkhand",
+      distance: "12.7 km",
+      rating: 4.8,
+      reviews: 178,
+      available: false,
+      languages: ["Hindi", "English"],
+      verified: true,
+      specialties: ["Heavy Machinery", "Water Management", "Land Preparation"]
+    },
+    {
+      id: 6,
+      name: "Krishna Das",
+      skills: ["pesticide", "planting"],
+      experience: "7 years",
+      hourlyRate: "₹140/hour",
+      dailyRate: "₹1,100/day",
+      location: "Giridih, Jharkhand",
+      distance: "15.3 km",
+      rating: 4.5,
+      reviews: 94,
+      available: true,
+      languages: ["Hindi"],
+      verified: true,
+      specialties: ["Crop Protection", "Seasonal Planning", "Yield Optimization"]
     }
   ];
 
   const filteredFarmers = selectedSkill === "all" 
     ? farmers 
-    : farmers.filter(farmer => farmer.skill === selectedSkill);
+    : farmers.filter(farmer => farmer.skills.includes(selectedSkill));
 
   return (
     <div className="min-h-screen pt-8">
       {/* Header */}
-      <section className="py-12 bg-gradient-to-r from-primary/10 to-secondary/10">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-4 text-center">
+      <section className="py-12" style={{background: 'var(--gradient-primary)'}}>
+        <div className="container mx-auto px-4 text-primary-foreground">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-center">
             Hire Skilled Farmers
           </h1>
-          <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto">
-            Connect with experienced agricultural professionals and skilled 
-            farmers for all your farming operations and seasonal work.
+          <p className="text-lg opacity-90 text-center max-w-2xl mx-auto">
+            Connect with experienced agricultural workers and skilled farmers 
+            in your area. Get the expertise you need for your farming operations.
           </p>
         </div>
       </section>
 
       {/* Search & Filters */}
-      <section className="py-8 border-b border-border">
+      <section className="py-8 border-b border-border" style={{background: 'var(--gradient-light)'}}>
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-4 items-center">
             {/* Location Search */}
@@ -123,6 +160,7 @@ const Farmers = () => {
                   size="sm"
                   onClick={() => setSelectedSkill(skill.id)}
                   className="whitespace-nowrap"
+                  style={selectedSkill === skill.id ? {background: 'var(--gradient-primary)'} : {}}
                 >
                   {skill.label}
                 </Button>
@@ -130,7 +168,7 @@ const Farmers = () => {
             </div>
 
             {/* Search Button */}
-            <Button className="flex items-center space-x-2">
+            <Button className="flex items-center space-x-2" style={{background: 'var(--gradient-primary)'}}>
               <Search className="h-4 w-4" />
               <span>Search</span>
             </Button>
@@ -138,41 +176,40 @@ const Farmers = () => {
         </div>
       </section>
 
-      {/* Farmer Listings */}
-      <section className="py-12">
+      {/* Farmers Listings */}
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold text-foreground">
               Available Farmers ({filteredFarmers.length})
             </h2>
+            <Button variant="outline" size="sm" className="flex items-center space-x-2">
+              <Filter className="h-4 w-4" />
+              <span>More Filters</span>
+            </Button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredFarmers.map((farmer) => (
-              <Card key={farmer.id} className="hover:shadow-lg transition-shadow">
+              <Card key={farmer.id} className="hover:shadow-elevated transition-shadow bg-card">
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
-                        <User className="h-8 w-8 text-primary-foreground" />
+                    <div className="flex items-center space-x-3">
+                      <div className="bg-primary/10 p-3 rounded-full">
+                        <User className="h-6 w-6 text-primary" />
                       </div>
                       <div className="flex-1">
-                        <CardTitle className="text-xl mb-1">{farmer.name}</CardTitle>
-                        <CardDescription className="flex items-center space-x-2 mb-2">
+                        <CardTitle className="text-lg mb-1 flex items-center space-x-2">
+                          <span>{farmer.name}</span>
+                          {farmer.verified && (
+                            <Award className="h-4 w-4 text-green-500" />
+                          )}
+                        </CardTitle>
+                        <CardDescription className="flex items-center space-x-2">
                           <MapPin className="h-4 w-4" />
                           <span>{farmer.location}</span>
                           <span className="text-muted-foreground">• {farmer.distance}</span>
                         </CardDescription>
-                        <div className="flex items-center space-x-4 text-sm">
-                          <span className="flex items-center space-x-1">
-                            <Clock className="h-4 w-4" />
-                            <span>{farmer.experience}</span>
-                          </span>
-                          <span className="flex items-center space-x-1">
-                            <Award className="h-4 w-4" />
-                            <span>{farmer.completedJobs} jobs</span>
-                          </span>
-                        </div>
                       </div>
                     </div>
                     <Badge variant={farmer.available ? "secondary" : "destructive"}>
@@ -182,6 +219,12 @@ const Farmers = () => {
                 </CardHeader>
 
                 <CardContent className="space-y-4">
+                  {/* Experience */}
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Experience:</span>
+                    <span className="font-medium">{farmer.experience}</span>
+                  </div>
+
                   {/* Rating */}
                   <div className="flex items-center space-x-2">
                     <div className="flex items-center space-x-1">
@@ -194,33 +237,45 @@ const Farmers = () => {
                   </div>
 
                   {/* Languages */}
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Languages:</span>
+                    <span className="font-medium">{farmer.languages.join(", ")}</span>
+                  </div>
+
+                  {/* Skills */}
                   <div>
-                    <div className="text-sm text-muted-foreground mb-2">Languages:</div>
+                    <div className="text-sm text-muted-foreground mb-2">Skills:</div>
                     <div className="flex flex-wrap gap-1">
-                      {farmer.languages.map((language, index) => (
+                      {farmer.skills.map((skill, index) => (
                         <Badge key={index} variant="outline" className="text-xs">
-                          {language}
+                          {skills.find(s => s.id === skill)?.label || skill}
                         </Badge>
                       ))}
                     </div>
                   </div>
 
-                  {/* Specializations */}
+                  {/* Specialties */}
                   <div>
-                    <div className="text-sm text-muted-foreground mb-2">Specializations:</div>
+                    <div className="text-sm text-muted-foreground mb-2">Specialties:</div>
                     <div className="flex flex-wrap gap-1">
-                      {farmer.specializations.map((spec, index) => (
+                      {farmer.specialties.map((specialty, index) => (
                         <Badge key={index} variant="secondary" className="text-xs">
-                          {spec}
+                          {specialty}
                         </Badge>
                       ))}
                     </div>
                   </div>
 
                   {/* Pricing */}
-                  <div className="bg-muted/50 p-3 rounded-lg flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Daily Rate:</span>
-                    <span className="font-bold text-primary text-lg">{farmer.rate}</span>
+                  <div className="bg-muted/50 p-3 rounded-lg">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-muted-foreground">Hourly Rate:</span>
+                      <span className="font-bold text-primary">{farmer.hourlyRate}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Daily Rate:</span>
+                      <span className="font-bold text-secondary">{farmer.dailyRate}</span>
+                    </div>
                   </div>
 
                   {/* Action Buttons */}
@@ -229,11 +284,17 @@ const Farmers = () => {
                       className="flex-1" 
                       disabled={!farmer.available}
                       variant={farmer.available ? "default" : "secondary"}
+                      style={farmer.available ? {background: 'var(--gradient-primary)'} : {}}
+                      onClick={() => {
+                        if (farmer.available) {
+                          alert(`Hiring ${farmer.name} for ${farmer.hourlyRate}. Contact: +91 9608792602`);
+                        }
+                      }}
                     >
                       {farmer.available ? "Hire Now" : "Not Available"}
                     </Button>
-                    <Button variant="outline">
-                      View Profile
+                    <Button variant="outline" size="sm">
+                      <Phone className="h-4 w-4" />
                     </Button>
                   </div>
                 </CardContent>
@@ -250,54 +311,47 @@ const Farmers = () => {
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="py-12 bg-muted/30">
+      {/* Quick Stats */}
+      <section className="py-12" style={{background: 'var(--gradient-section)'}}>
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              Why Hire Through KisanSeva Plus?
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Verified Professionals</h3>
-              <p className="text-muted-foreground">All farmers are background verified with skill assessment</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <div className="text-3xl font-bold text-primary mb-2">200+</div>
+              <div className="text-sm text-muted-foreground">Skilled Farmers</div>
             </div>
-
-            <div className="text-center">
-              <div className="bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Star className="h-8 w-8 text-secondary" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Rated & Reviewed</h3>
-              <p className="text-muted-foreground">Choose based on real reviews from other farmers</p>
+            <div>
+              <div className="text-3xl font-bold text-secondary mb-2">95%</div>
+              <div className="text-sm text-muted-foreground">Job Success Rate</div>
             </div>
-
-            <div className="text-center">
-              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Clock className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Flexible Hiring</h3>
-              <p className="text-muted-foreground">Hire for daily, weekly, or seasonal work</p>
+            <div>
+              <div className="text-3xl font-bold text-primary mb-2">1hr</div>
+              <div className="text-sm text-muted-foreground">Avg Response Time</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-secondary mb-2">4.7★</div>
+              <div className="text-sm text-muted-foreground">Average Rating</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-12 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-4">Ready to Hire?</h2>
+      {/* Help Section */}
+      <section className="py-12" style={{background: 'var(--gradient-primary)'}}>
+        <div className="container mx-auto px-4 text-center text-primary-foreground">
+          <h2 className="text-2xl font-bold mb-4">Need Help Finding the Right Farmer?</h2>
           <p className="text-lg opacity-90 mb-6 max-w-2xl mx-auto">
-            Join thousands of farmers who trust KisanSeva Plus for their 
-            workforce needs. Get started today!
+            Our support team can help you find farmers with specific skills 
+            and experience for your agricultural needs.
           </p>
-          <Button variant="secondary" size="lg">
-            Post Your Job Requirement
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button variant="secondary" size="lg" className="flex items-center space-x-2">
+              <Clock className="h-5 w-5" />
+              <span>24/7 Support</span>
+            </Button>
+            <Button variant="outline" size="lg" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+              Call +91 9608792602
+            </Button>
+          </div>
         </div>
       </section>
     </div>

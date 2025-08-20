@@ -18,6 +18,7 @@ const Booking = () => {
   ];
 
   const equipment = [
+    // Tractors
     {
       id: 1,
       name: "Mahindra 575 DI Tractor",
@@ -25,7 +26,7 @@ const Booking = () => {
       power: "47 HP",
       price: "₹800/hour",
       dailyPrice: "₹6,000/day",
-      location: "Gurgaon, Haryana",
+      location: "Ranchi, Jharkhand",
       distance: "2.5 km",
       rating: 4.8,
       reviews: 127,
@@ -35,13 +36,45 @@ const Booking = () => {
     },
     {
       id: 2,
-      name: "John Deere Combine Harvester",
+      name: "Swaraj 855 FE Tractor",
+      category: "tractors",
+      power: "50 HP",
+      price: "₹850/hour",
+      dailyPrice: "₹6,500/day",
+      location: "Jamshedpur, Jharkhand",
+      distance: "5.2 km",
+      rating: 4.7,
+      reviews: 98,
+      available: true,
+      owner: "Sunil Sharma",
+      features: ["Power Steering", "High Lift Capacity", "4WD Available"]
+    },
+    {
+      id: 3,
+      name: "Sonalika DI 60 Tractor",
+      category: "tractors",
+      power: "60 HP",
+      price: "₹900/hour",
+      dailyPrice: "₹7,200/day",
+      location: "Dhanbad, Jharkhand",
+      distance: "8.1 km",
+      rating: 4.6,
+      reviews: 156,
+      available: true,
+      owner: "Vikash Singh",
+      features: ["Double Clutch", "Oil Immersed Brakes", "Multi Speed PTO"]
+    },
+    
+    // Harvesters
+    {
+      id: 4,
+      name: "John Deere W70 Combine Harvester",
       category: "harvesters",
       power: "130 HP",
       price: "₹2,500/hour",
       dailyPrice: "₹18,000/day",
-      location: "Sonipat, Haryana",
-      distance: "8.2 km",
+      location: "Bokaro, Jharkhand",
+      distance: "12.3 km",
       rating: 4.9,
       reviews: 89,
       available: true,
@@ -49,34 +82,130 @@ const Booking = () => {
       features: ["Advanced Cutting", "Large Capacity", "Operator Included"]
     },
     {
-      id: 3,
+      id: 5,
+      name: "Kartar 4000 Mini Combine",
+      category: "harvesters",
+      power: "45 HP",
+      price: "₹1,800/hour",
+      dailyPrice: "₹12,000/day",
+      location: "Hazaribagh, Jharkhand",
+      distance: "15.7 km",
+      rating: 4.5,
+      reviews: 67,
+      available: true,
+      owner: "Ramesh Yadav",
+      features: ["Compact Design", "Easy Maneuver", "Low Fuel Consumption"]
+    },
+    
+    // Tillers
+    {
+      id: 6,
       name: "Rotary Tiller - 7 Feet",
       category: "tillers",
       power: "35-50 HP Required",
       price: "₹400/hour",
       dailyPrice: "₹3,000/day",
-      location: "Faridabad, Haryana",
-      distance: "12.1 km",
+      location: "Giridih, Jharkhand",
+      distance: "18.2 km",
       rating: 4.6,
       reviews: 203,
-      available: false,
+      available: true,
       owner: "Amit Sharma",
       features: ["Heavy Duty", "Smooth Operation", "Easy Attachment"]
     },
     {
-      id: 4,
+      id: 7,
+      name: "Disc Harrow - 20 Discs",
+      category: "tillers",
+      power: "40-60 HP Required",
+      price: "₹450/hour",
+      dailyPrice: "₹3,500/day",
+      location: "Deoghar, Jharkhand",
+      distance: "22.1 km",
+      rating: 4.4,
+      reviews: 134,
+      available: true,
+      owner: "Mohan Das",
+      features: ["Sharp Cutting", "Adjustable Angle", "Durable Build"]
+    },
+    
+    // Sprayers
+    {
+      id: 8,
       name: "Boom Sprayer - 12 Feet",
       category: "sprayers",
       power: "Tank Capacity: 400L",
       price: "₹300/hour",
       dailyPrice: "₹2,200/day",
-      location: "Palwal, Haryana",
-      distance: "15.5 km",
+      location: "Palamu, Jharkhand",
+      distance: "25.5 km",
       rating: 4.7,
       reviews: 156,
       available: true,
       owner: "Priya Devi",
       features: ["Uniform Spray", "Adjustable Boom", "Chemical Tank"]
+    },
+    {
+      id: 9,
+      name: "Power Sprayer - High Pressure",
+      category: "sprayers",
+      power: "Tank Capacity: 200L",
+      price: "₹250/hour",
+      dailyPrice: "₹1,800/day",
+      location: "Gumla, Jharkhand",
+      distance: "28.3 km",
+      rating: 4.3,
+      reviews: 89,
+      available: true,
+      owner: "Santosh Kumar",
+      features: ["High Pressure", "Portable", "Easy Fill"]
+    },
+    
+    // Additional Equipment
+    {
+      id: 10,
+      name: "Seed Drill - 9 Tyne",
+      category: "tillers",
+      power: "30-45 HP Required",
+      price: "₹350/hour",
+      dailyPrice: "₹2,800/day",
+      location: "Koderma, Jharkhand",
+      distance: "30.1 km",
+      rating: 4.5,
+      reviews: 112,
+      available: true,
+      owner: "Ravi Shankar",
+      features: ["Precise Sowing", "Adjustable Depth", "Uniform Spacing"]
+    },
+    {
+      id: 11,
+      name: "Thresher - Multi Crop",
+      category: "harvesters",
+      power: "20 HP Required",
+      price: "₹600/hour",
+      dailyPrice: "₹4,500/day",
+      location: "Latehar, Jharkhand",
+      distance: "32.8 km",
+      rating: 4.6,
+      reviews: 178,
+      available: false,
+      owner: "Manoj Singh",
+      features: ["Multi Crop", "High Efficiency", "Low Grain Loss"]
+    },
+    {
+      id: 12,
+      name: "Cultivator - 9 Tyne",
+      category: "tillers",
+      power: "35-50 HP Required",
+      price: "₹380/hour",
+      dailyPrice: "₹2,900/day",
+      location: "Chatra, Jharkhand",
+      distance: "35.2 km",
+      rating: 4.7,
+      reviews: 145,
+      available: true,
+      owner: "Krishna Kumar",
+      features: ["Deep Plowing", "Weed Control", "Soil Preparation"]
     }
   ];
 
@@ -226,6 +355,12 @@ const Booking = () => {
                       disabled={!item.available}
                       variant={item.available ? "default" : "secondary"}
                       style={item.available ? {background: 'var(--gradient-primary)'} : {}}
+                      onClick={() => {
+                        if (item.available) {
+                          // Here you can add booking logic
+                          alert(`Booking ${item.name} for ${item.price}. Contact owner: ${item.owner}`);
+                        }
+                      }}
                     >
                       {item.available ? "Book Now" : "Not Available"}
                     </Button>
