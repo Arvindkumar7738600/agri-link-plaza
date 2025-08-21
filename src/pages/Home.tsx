@@ -1,6 +1,8 @@
-import { ArrowRight, Tractor, Users, Shield, MapPin, Smartphone, Clock } from "lucide-react";
+import { ArrowRight, Tractor, Users, Shield, MapPin, Smartphone, Clock, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-agriculture.jpg";
 
@@ -53,38 +55,68 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative text-primary-foreground overflow-hidden" style={{background: 'linear-gradient(90deg, #9ebd13 0%, #008552 100%)'}}>
-        <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${heroImage})`,
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/95 to-secondary/90" />
-        
-        <div className="relative container mx-auto px-4 py-24 lg:py-32">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">
-              Connecting Farmers with
-              <span className="text-accent block">Agricultural Solutions</span>
-            </h1>
-            <p className="text-lg lg:text-xl opacity-90 mb-8 leading-relaxed">
-              Rent tractors, hire skilled farmers, and access agricultural equipment across India. 
-              Making farming efficient and profitable for everyone.
-              <br /><span className="text-accent font-medium">Built by student entrepreneurs from IIT Madras who understand farming communities</span>
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" variant="secondary" asChild className="text-lg px-8">
-                <Link to="/booking">
-                  Book Equipment <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="secondary" asChild className="text-lg px-8 bg-white/20 text-primary-foreground border-2 border-white/30 hover:bg-white hover:text-primary">
-                <Link to="/farmers">
-                  Hire Farmers
-                </Link>
-              </Button>
+      <section className="relative text-white overflow-hidden bg-green-600 min-h-screen">
+        <div className="container mx-auto px-4 py-12 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
+            {/* Left Content */}
+            <div className="space-y-8">
+              <div>
+                <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">
+                  Connecting <span className="text-yellow-300">Farmer</span>
+                  <br />with Agricultural
+                  <br />Solutions
+                </h1>
+                <p className="text-lg lg:text-xl opacity-90 mb-6 leading-relaxed">
+                  Rent tractors, hire skilled farmers, and access agricultural equipment across India. Making farming efficient and profitable for everyone.
+                </p>
+                <p className="text-sm opacity-80 italic">
+                  Built by student entrepreneurs from IIT Madras who understand farming communities
+                </p>
+              </div>
+
+              {/* Search Card */}
+              <Card className="bg-white text-gray-900 shadow-2xl">
+                <CardHeader>
+                  <CardTitle className="text-xl text-gray-900">Find Services Near You</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700">Service Type</label>
+                      <Select>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select Service" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="tractor">Tractor Rental</SelectItem>
+                          <SelectItem value="harvester">Harvester Rental</SelectItem>
+                          <SelectItem value="farmer">Hire Farmers</SelectItem>
+                          <SelectItem value="equipment">Other Equipment</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700">Location</label>
+                      <Input placeholder="Enter city or pin code" className="w-full" />
+                    </div>
+                  </div>
+                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
+                    <Search className="w-4 h-4 mr-2" />
+                    Search
+                  </Button>
+                </CardContent>  
+              </Card>
+            </div>
+
+            {/* Right Image */}
+            <div className="relative">
+              <div className="rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src={heroImage} 
+                  alt="Agricultural field with growing crops" 
+                  className="w-full h-[500px] lg:h-[600px] object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>
