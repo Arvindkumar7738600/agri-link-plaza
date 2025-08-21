@@ -30,29 +30,18 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-end space-x-6 pb-1">
+          <nav className="hidden md:flex items-center justify-center space-x-3 pb-2">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`relative transition-all duration-300 group ${
-                  item.name === "Hire Farmers"
-                    ? `px-6 py-3 rounded-full font-semibold text-white shadow-lg transition-all duration-300 ${
-                        item.current
-                          ? "bg-gradient-to-r from-green-500 to-green-600 shadow-green-500/25"
-                          : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 hover:shadow-green-500/30 hover:scale-105"
-                      }`
-                    : `text-sm font-medium transition-colors hover:text-primary ${
-                        item.current
-                          ? "text-primary border-b-2 border-primary pb-1"
-                          : "text-muted-foreground"
-                      }`
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
+                  item.current
+                    ? "bg-foreground text-background border-foreground shadow-sm"
+                    : "bg-background text-foreground border-border hover:bg-muted hover:border-muted-foreground hover:shadow-sm"
                 }`}
               >
-                <span className={item.name === "Hire Farmers" ? "relative z-10" : ""}>{item.name}</span>
-                {item.name === "Hire Farmers" && (
-                  <div className="absolute inset-0 bg-white/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                )}
+                {item.name}
               </Link>
             ))}
           </nav>
