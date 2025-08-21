@@ -55,7 +55,7 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative text-white overflow-hidden bg-green-600 min-h-screen">
+      <section className="relative text-white overflow-hidden min-h-screen" style={{backgroundColor: '#4a7c59'}}>
         <div className="container mx-auto px-4 py-12 lg:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
             {/* Left Content */}
@@ -100,7 +100,7 @@ const Home = () => {
                       <Input placeholder="Enter city or pin code" className="w-full" />
                     </div>
                   </div>
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
+                  <Button className="w-full text-white" style={{backgroundColor: '#4a7c59'}} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3e6b4a'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#4a7c59'}>
                     <Search className="w-4 h-4 mr-2" />
                     Search
                   </Button>
