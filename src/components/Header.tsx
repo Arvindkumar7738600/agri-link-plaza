@@ -30,30 +30,40 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-2">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`relative px-6 py-3 text-sm font-semibold rounded-full transition-all duration-300 overflow-hidden group ${
                   item.current
-                    ? "text-primary border-b-2 border-primary pb-1"
-                    : "text-muted-foreground"
+                    ? "bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg shadow-primary/25"
+                    : "text-muted-foreground hover:text-white hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 hover:shadow-lg hover:shadow-primary/10 hover:scale-105"
                 }`}
               >
-                {item.name}
+                <span className="relative z-10">{item.name}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-white/5 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
             ))}
           </nav>
 
           {/* Contact Info & Login */}
           <div className="hidden lg:flex items-center space-x-4">
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <Phone className="h-4 w-4" />
-              <span>+91 9608792602</span>
+            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-accent/10 to-secondary/10 backdrop-blur-sm border border-border/50">
+              <Phone className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium">+91 9608792602</span>
             </div>
-            <Button variant="outline" size="sm" asChild>
-              <Link to="/login">Login</Link>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              asChild 
+              className="relative overflow-hidden group bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
+            >
+              <Link to="/login" className="relative z-10">
+                <span>Login</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
             </Button>
           </div>
 
@@ -75,27 +85,34 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-border py-4">
-            <nav className="flex flex-col space-y-4">
+          <div className="md:hidden border-t border-border py-4 bg-gradient-to-b from-background/95 to-background/90 backdrop-blur-sm">
+            <nav className="flex flex-col space-y-3">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
-                    item.current ? "text-primary" : "text-muted-foreground"
+                  className={`relative px-4 py-3 mx-2 text-sm font-semibold rounded-lg transition-all duration-300 overflow-hidden group ${
+                    item.current
+                      ? "bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg shadow-primary/25"
+                      : "text-muted-foreground hover:text-white hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 hover:shadow-lg hover:shadow-primary/10"
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.name}
+                  <span className="relative z-10">{item.name}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                 </Link>
               ))}
-              <div className="pt-4 border-t border-border">
-                <Button className="w-full mb-2" size="sm" asChild>
+              <div className="pt-4 mx-2 border-t border-border/50">
+                <Button 
+                  className="w-full mb-3 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25 transition-all duration-300" 
+                  size="sm" 
+                  asChild
+                >
                   <Link to="/login">Login</Link>
                 </Button>
-                <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                  <Phone className="h-4 w-4" />
-                  <span>+91 9608792602</span>
+                <div className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-accent/10 to-secondary/10 backdrop-blur-sm border border-border/50">
+                  <Phone className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">+91 9608792602</span>
                 </div>
               </div>
             </nav>
