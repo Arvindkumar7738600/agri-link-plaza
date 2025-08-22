@@ -35,7 +35,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center justify-center space-x-3 pb-2">
+          <nav className="hidden md:flex items-center justify-center space-x-3">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -52,7 +52,7 @@ const Header = () => {
           </nav>
 
           {/* Language Selector & Login */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-accent/10 to-secondary/10 backdrop-blur-sm border border-border/50">

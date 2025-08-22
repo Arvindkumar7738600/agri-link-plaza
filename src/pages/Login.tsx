@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Phone, ArrowRight, CheckCircle, Loader2, AlertCircle } from "lucide-react";
+import { Phone, ArrowRight, CheckCircle, Loader2, AlertCircle, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
@@ -147,176 +147,188 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen pt-8 flex items-center justify-center" style={{background: 'var(--gradient-light)'}}>
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-md mx-auto">
-          <Card className="shadow-elevated bg-card border-0">
-            <CardHeader className="text-center">
-              <div className="mb-6">
-                <img 
-                  src="/lovable-uploads/7c821560-56eb-4079-8f44-e64f31f694dd.png" 
-                  alt="KisanSeva Plus Logo" 
-                  className="h-12 mx-auto"
-                />
+    <div className="min-h-screen bg-white relative overflow-hidden">
+      {/* Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800"></div>
+      
+      {/* Animated Background Elements */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          {/* Glass Effect Login Card */}
+          <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl shadow-black/20 rounded-2xl overflow-hidden">
+            <CardContent className="p-8">
+              {/* User Avatar */}
+              <div className="flex justify-center mb-8">
+                <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
+                  <User className="w-10 h-10 text-white" />
+                </div>
               </div>
-              <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-              <CardDescription>
-                Sign in to your KisanSeva Plus account
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {!isOtpSent ? (
-                <>
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Phone Number
-                    </label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        type="tel" 
-                        placeholder="Enter 10-digit mobile number"
-                        className={`pl-10 ${phoneError ? 'border-destructive' : ''}`}
-                        value={phoneNumber}
-                        onChange={(e) => {
-                          setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10));
-                          setPhoneError("");
-                        }}
-                        maxLength={10}
-                      />
-                      {phoneError && (
-                        <div className="flex items-center mt-2 text-sm text-destructive">
+              
+              {/* Welcome Text */}
+              <div className="text-center mb-8 space-y-2">
+                <h1 className="text-3xl font-bold text-white">Welcome Back</h1>
+                <h2 className="text-xl font-semibold text-white/90">KisanSeva Plus</h2>
+                <p className="text-sm text-white/70 italic">Hafto Ka Kaam Ghanto Mein</p>
+              </div>
+
+              {/* Login Form */}
+              <div className="space-y-6">
+                {!isOtpSent ? (
+                  <>
+                    <div>
+                      <label className="text-sm font-medium text-white/80 mb-2 block">
+                        Phone Number
+                      </label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
+                        <Input 
+                          type="tel" 
+                          placeholder="Enter 10-digit mobile number"
+                          className={`pl-10 bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-white/50 focus:border-white/40 focus:ring-2 focus:ring-white/20 ${phoneError ? 'border-red-400' : ''}`}
+                          value={phoneNumber}
+                          onChange={(e) => {
+                            setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10));
+                            setPhoneError("");
+                          }}
+                          maxLength={10}
+                        />
+                        {phoneError && (
+                          <div className="flex items-center mt-2 text-sm text-red-300">
+                            <AlertCircle className="h-4 w-4 mr-1" />
+                            {phoneError}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-pink-500/25 border-0" 
+                      onClick={handleSendOtp}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Sending OTP...
+                        </>
+                      ) : (
+                        <>
+                          Send OTP <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-center mb-4">
+                      <div className="flex items-center justify-center mb-2">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2" />
+                        <span className="text-sm font-medium text-white">OTP Sent Successfully</span>
+                      </div>
+                      <p className="text-sm text-white/70">
+                        Verification code sent to +91 {phoneNumber}
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm font-medium text-white/80 mb-3 block text-center">
+                        Enter 6-Digit OTP
+                      </label>
+                      <div className="flex justify-center">
+                        <InputOTP
+                          maxLength={6}
+                          value={otp}
+                          onChange={(value) => {
+                            setOtp(value);
+                            setOtpError("");
+                          }}
+                          className="gap-2"
+                        >
+                          <InputOTPGroup className="gap-2">
+                            <InputOTPSlot index={0} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                            <InputOTPSlot index={1} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                            <InputOTPSlot index={2} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                            <InputOTPSlot index={3} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                            <InputOTPSlot index={4} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                            <InputOTPSlot index={5} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </div>
+                      {otpError && (
+                        <div className="flex items-center justify-center mt-2 text-sm text-red-300">
                           <AlertCircle className="h-4 w-4 mr-1" />
-                          {phoneError}
+                          {otpError}
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Format: 10-digit number without +91
-                    </p>
-                  </div>
-                  
-                  <Button 
-                    className="w-full" 
-                    size="lg"
-                    style={{background: 'var(--gradient-primary)'}}
-                    onClick={handleSendOtp}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending OTP...
-                      </>
-                    ) : (
-                      <>
-                        Send OTP <ArrowRight className="ml-2 h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <div className="text-center mb-4">
-                    <div className="flex items-center justify-center mb-2">
-                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                      <span className="text-sm font-medium">OTP Sent Successfully</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Verification code sent to +91 {phoneNumber}
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-3 block text-center">
-                      Enter 6-Digit OTP
-                    </label>
-                    <div className="flex justify-center">
-                      <InputOTP
-                        maxLength={6}
-                        value={otp}
-                        onChange={(value) => {
-                          setOtp(value);
-                          setOtpError("");
-                        }}
-                      >
-                        <InputOTPGroup>
-                          <InputOTPSlot index={0} />
-                          <InputOTPSlot index={1} />
-                          <InputOTPSlot index={2} />
-                          <InputOTPSlot index={3} />
-                          <InputOTPSlot index={4} />
-                          <InputOTPSlot index={5} />
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </div>
-                    {otpError && (
-                      <div className="flex items-center justify-center mt-2 text-sm text-destructive">
-                        <AlertCircle className="h-4 w-4 mr-1" />
-                        {otpError}
-                      </div>
-                    )}
-                  </div>
-                  
-                  <Button 
-                    className="w-full" 
-                    size="lg"
-                    style={{background: 'var(--gradient-primary)'}}
-                    onClick={handleVerifyOtp}
-                    disabled={isVerifying || otp.length !== 6}
-                  >
-                    {isVerifying ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Verifying...
-                      </>
-                    ) : (
-                      <>
-                        Verify & Login <CheckCircle className="ml-2 h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
-                  
-                  <div className="space-y-3">
-                    <div className="text-center">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={handleResendOtp}
-                        disabled={resendTimer > 0 || isLoading}
-                      >
-                        {resendTimer > 0 ? (
-                          `Resend OTP in ${resendTimer}s`
-                        ) : isLoading ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Resending...
-                          </>
-                        ) : (
-                          "Resend OTP"
-                        )}
-                      </Button>
-                    </div>
                     
-                    <div className="text-center">
-                      <Button variant="ghost" size="sm" onClick={() => {
-                        setIsOtpSent(false);
-                        setOtp("");
-                        setOtpError("");
-                        setResendTimer(0);
-                      }}>
-                        Change Phone Number
-                      </Button>
+                    <Button 
+                      className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-pink-500/25 border-0" 
+                      onClick={handleVerifyOtp}
+                      disabled={isVerifying || otp.length !== 6}
+                    >
+                      {isVerifying ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Verifying...
+                        </>
+                      ) : (
+                        <>
+                          Verify & Login <CheckCircle className="ml-2 h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
+                    
+                    <div className="space-y-3">
+                      <div className="text-center">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={handleResendOtp}
+                          disabled={resendTimer > 0 || isLoading}
+                          className="text-white/80 hover:text-white hover:bg-white/10"
+                        >
+                          {resendTimer > 0 ? (
+                            `Resend OTP in ${resendTimer}s`
+                          ) : isLoading ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Resending...
+                            </>
+                          ) : (
+                            "Resend OTP"
+                          )}
+                        </Button>
+                      </div>
+                      
+                      <div className="text-center">
+                        <Button variant="ghost" size="sm" onClick={() => {
+                          setIsOtpSent(false);
+                          setOtp("");
+                          setOtpError("");
+                          setResendTimer(0);
+                        }} className="text-white/80 hover:text-white hover:bg-white/10">
+                          Change Phone Number
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
+                
+                <div className="text-center text-sm text-white/70 mt-6">
+                  Don't have an account?{" "}
+                  <Link to="/signup" className="text-pink-300 font-medium hover:text-pink-200 underline">
+                    Sign up here
+                  </Link>
+                </div>
+              </div>
               
-              <div className="text-center text-sm text-muted-foreground">
-                Don't have an account?{" "}
-                <Link to="/signup" className="text-primary font-medium hover:underline">
-                  Sign up here
-                </Link>
+              {/* Founder Tagline */}
+              <div className="absolute bottom-4 right-6 text-xs text-white/50 italic">
+                Founder of IIT Madras Students
               </div>
             </CardContent>
           </Card>
