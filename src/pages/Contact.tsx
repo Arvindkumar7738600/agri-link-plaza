@@ -92,46 +92,6 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Call Center Style Contact Section */}
-      <section className="py-20 relative overflow-hidden" style={{background: 'linear-gradient(135deg, hsl(120, 60%, 35%) 0%, hsl(120, 50%, 45%) 50%, hsl(120, 45%, 55%) 100%)'}}>
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Side - Content */}
-            <div className="text-white space-y-6">
-              <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
-                Need Help? Get Free Consultation!
-              </h2>
-              <p className="text-lg lg:text-xl opacity-90 leading-relaxed">
-                Experience you can trust, service you can count on. KisanSeva Plus – your partner in progress!
-              </p>
-              <Button 
-                size="lg" 
-                className="bg-white text-green-700 hover:bg-green-50 font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                onClick={() => window.open("tel:+919608792602", "_self")}
-              >
-                <Phone className="h-5 w-5 mr-2" />
-                Call Us Now
-              </Button>
-            </div>
-
-            {/* Right Side - Call Center Image */}
-            <div className="relative lg:ml-8">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <img 
-                  src="/lovable-uploads/ea069e53-81b5-4810-b8db-c25bd54f94a5.png" 
-                  alt="Customer support executives at KisanSeva Plus call center"
-                  className="w-full h-auto object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-green-900/30 to-transparent"></div>
-              </div>
-              {/* Decorative elements */}
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/20 rounded-full blur-xl"></div>
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Contact Information */}
       <section className="py-20" style={{background: 'var(--gradient-light)'}}>
         <div className="container mx-auto px-4">
