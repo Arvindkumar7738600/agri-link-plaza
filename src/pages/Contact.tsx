@@ -3,8 +3,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import ScheduleModal from "@/components/ScheduleModal";
 
 const Contact = () => {
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+
+  const handleAction = (actionType: string) => {
+    switch (actionType) {
+      case "Call Now":
+        window.open("tel:+919608792602", "_self");
+        break;
+      case "Send Email":
+        window.open("mailto:info@kisansevaplus.com", "_self");
+        break;
+      case "Get Directions":
+        window.open("https://maps.google.com?q=KisanSeva+Plus+Complex,+Ranchi,+Jharkhand", "_blank");
+        break;
+      case "View Schedule":
+        setIsScheduleModalOpen(true);
+        break;
+      default:
+        break;
+    }
+  };
   const contactInfo = [
     {
       icon: Phone,
@@ -87,7 +109,12 @@ const Contact = () => {
                   <CardContent className="space-y-2">
                     <div className="font-semibold text-foreground">{info.details}</div>
                     <CardDescription>{info.description}</CardDescription>
-                    <Button variant="outline" size="sm" className="mt-4">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="mt-4"
+                      onClick={() => handleAction(info.action)}
+                    >
                       {info.action}
                     </Button>
                   </CardContent>
@@ -301,6 +328,11 @@ const Contact = () => {
           </div>
         </div>
       </section>
+
+      <ScheduleModal 
+        isOpen={isScheduleModalOpen} 
+        onClose={() => setIsScheduleModalOpen(false)} 
+      />
     </div>
   );
 };

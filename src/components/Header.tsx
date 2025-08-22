@@ -1,11 +1,16 @@
 import { useState } from "react";
-import { Menu, X, Tractor, Phone, MapPin } from "lucide-react";
+import { Menu, X, Globe, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useLanguage, Language } from "@/contexts/LanguageContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { language, setLanguage } = useLanguage();
+
+  const languages: Language[] = ['English', 'Hindi', 'Marathi', 'Punjabi', 'Tamil'];
 
   const navigation = [
     { name: "Home", href: "/", current: location.pathname === "/" },
@@ -46,12 +51,28 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Contact Info & Login */}
+          {/* Language Selector & Login */}
           <div className="hidden lg:flex items-center space-x-4">
-            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-accent/10 to-secondary/10 backdrop-blur-sm border border-border/50">
-              <Phone className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium">+91 9608792602</span>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-accent/10 to-secondary/10 backdrop-blur-sm border border-border/50">
+                  <Globe className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">{language}</span>
+                  <ChevronDown className="h-3 w-3 text-primary" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-32 bg-background/95 backdrop-blur-sm">
+                {languages.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang}
+                    onClick={() => setLanguage(lang)}
+                    className={`cursor-pointer ${language === lang ? 'bg-accent text-accent-foreground' : ''}`}
+                  >
+                    {lang}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button 
               variant="outline" 
               size="sm" 
@@ -108,10 +129,26 @@ const Header = () => {
                 >
                   <Link to="/login">Login</Link>
                 </Button>
-                <div className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-accent/10 to-secondary/10 backdrop-blur-sm border border-border/50">
-                  <Phone className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">+91 9608792602</span>
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="w-full flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-accent/10 to-secondary/10 backdrop-blur-sm border border-border/50">
+                      <Globe className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium">{language}</span>
+                      <ChevronDown className="h-3 w-3 text-primary" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="center" className="w-32 bg-background/95 backdrop-blur-sm">
+                    {languages.map((lang) => (
+                      <DropdownMenuItem
+                        key={lang}
+                        onClick={() => setLanguage(lang)}
+                        className={`cursor-pointer ${language === lang ? 'bg-accent text-accent-foreground' : ''}`}
+                      >
+                        {lang}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </nav>
           </div>
