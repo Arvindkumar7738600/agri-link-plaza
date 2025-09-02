@@ -135,30 +135,48 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {services.map((service, index) => {
               const IconComponent = service.icon;
+              const colors = [
+                'from-red-400 to-red-500', // Equipment Rental - Red
+                'from-amber-400 to-yellow-500', // Farmer Hiring - Yellow
+                'from-purple-500 to-indigo-600', // Location-Based Search - Purple
+                'from-emerald-400 to-teal-500' // Verified Users - Teal
+              ];
+              const bgColors = [
+                'bg-red-50', // Equipment Rental background
+                'bg-amber-50', // Farmer Hiring background  
+                'bg-purple-50', // Location-Based Search background
+                'bg-teal-50' // Verified Users background
+              ];
               return (
-                <Card key={index} className="group hover:shadow-elevated transition-all duration-300 border-border hover:border-primary/30 bg-card">
-                  <CardHeader className="text-center pb-4">
-                    <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
-                      <IconComponent className="h-8 w-8 text-primary group-hover:text-primary-foreground" />
+                <div key={index} className={`${bgColors[index]} rounded-3xl p-8 hover:scale-105 transition-all duration-300 cursor-pointer group`}>
+                  <div className="text-center space-y-6">
+                    <div className={`bg-gradient-to-br ${colors[index]} w-20 h-20 rounded-2xl flex items-center justify-center mx-auto shadow-lg group-hover:shadow-xl transition-all duration-300`}>
+                      <IconComponent className="h-10 w-10 text-white" />
                     </div>
-                    <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                      {service.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <CardDescription className="mb-4 leading-relaxed">
-                      {service.description}
-                    </CardDescription>
-                    <Button variant="outline" size="sm" asChild className="group-hover:border-primary group-hover:text-primary">
-                      <Link to={service.link}>
+                    <div className="space-y-3">
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {service.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {service.description}
+                      </p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      asChild 
+                      className="border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      <Link to={service.link} className="flex items-center gap-2">
                         Learn More
+                        <ArrowRight className="h-4 w-4" />
                       </Link>
                     </Button>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               );
             })}
           </div>
