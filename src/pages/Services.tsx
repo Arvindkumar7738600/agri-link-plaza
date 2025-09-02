@@ -156,23 +156,37 @@ const Services = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {additionalServices.map((service, index) => {
               const IconComponent = service.icon;
+              const colors = [
+                'from-emerald-400 to-teal-500', // Location-Based Search - Teal
+                'from-indigo-400 to-blue-500', // KYC Verification - Blue
+                'from-amber-400 to-orange-500', // 24/7 Support - Orange
+                'from-rose-400 to-pink-500' // Emergency Services - Pink
+              ];
+              const bgColors = [
+                'bg-teal-50', // Location-Based Search background
+                'bg-blue-50', // KYC Verification background  
+                'bg-orange-50', // 24/7 Support background
+                'bg-pink-50' // Emergency Services background
+              ];
               return (
-                <Card key={index} className="text-center hover:shadow-elevated transition-shadow bg-card">
-                  <CardHeader className="pb-4">
-                    <div className="bg-secondary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <IconComponent className="h-8 w-8 text-secondary" />
+                <div key={index} className={`${bgColors[index]} rounded-3xl p-8 hover:scale-105 transition-all duration-300 cursor-pointer group`}>
+                  <div className="text-center space-y-6">
+                    <div className={`bg-gradient-to-br ${colors[index]} w-20 h-20 rounded-2xl flex items-center justify-center mx-auto shadow-lg group-hover:shadow-xl transition-all duration-300`}>
+                      <IconComponent className="h-10 w-10 text-white" />
                     </div>
-                    <CardTitle className="text-lg">{service.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="leading-relaxed">
-                      {service.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+                    <div className="space-y-3">
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {service.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {service.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>

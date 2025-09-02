@@ -135,30 +135,44 @@ const Contact = () => {
       {/* Contact Information */}
       <section className="py-20" style={{background: 'var(--gradient-light)'}}>
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {contactInfo.map((info, index) => {
               const IconComponent = info.icon;
+              const colors = [
+                'from-green-400 to-emerald-500', // Phone Support - Green
+                'from-blue-400 to-cyan-500', // Email Support - Blue  
+                'from-purple-400 to-violet-500', // Head Office - Purple
+                'from-orange-400 to-amber-500' // Business Hours - Orange
+              ];
+              const bgColors = [
+                'bg-green-50', // Phone Support background
+                'bg-blue-50', // Email Support background  
+                'bg-purple-50', // Head Office background
+                'bg-orange-50' // Business Hours background
+              ];
               return (
-                <Card key={index} className="text-center hover:shadow-elevated transition-shadow bg-card">
-                  <CardHeader className="pb-4">
-                    <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <IconComponent className="h-8 w-8 text-primary" />
+                <div key={index} className={`${bgColors[index]} rounded-3xl p-8 hover:scale-105 transition-all duration-300 cursor-pointer group`}>
+                  <div className="text-center space-y-6">
+                    <div className={`bg-gradient-to-br ${colors[index]} w-20 h-20 rounded-2xl flex items-center justify-center mx-auto shadow-lg group-hover:shadow-xl transition-all duration-300`}>
+                      <IconComponent className="h-10 w-10 text-white" />
                     </div>
-                    <CardTitle className="text-lg">{info.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="font-semibold text-foreground">{info.details}</div>
-                    <CardDescription>{info.description}</CardDescription>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="mt-4"
-                      onClick={() => handleAction(info.action)}
-                    >
-                      {info.action}
-                    </Button>
-                  </CardContent>
-                </Card>
+                    <div className="space-y-3">
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {info.title}
+                      </h3>
+                      <div className="text-gray-800 font-semibold text-sm">{info.details}</div>
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {info.description}
+                      </p>
+                      <button 
+                        className="bg-white text-gray-700 hover:bg-gray-100 transition-colors px-4 py-2 rounded-lg border border-gray-300 font-medium text-sm"
+                        onClick={() => handleAction(info.action)}
+                      >
+                        {info.action}
+                      </button>
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>

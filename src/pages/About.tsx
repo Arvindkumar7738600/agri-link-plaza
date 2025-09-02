@@ -128,23 +128,37 @@ const About = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => {
               const IconComponent = value.icon;
+              const colors = [
+                'from-green-400 to-emerald-500', // Our Mission - Green
+                'from-blue-400 to-cyan-500', // Our Vision - Blue  
+                'from-purple-400 to-violet-500', // Our Values - Purple
+                'from-orange-400 to-amber-500' // Our Community - Orange
+              ];
+              const bgColors = [
+                'bg-green-50', // Our Mission background
+                'bg-blue-50', // Our Vision background  
+                'bg-purple-50', // Our Values background
+                'bg-orange-50' // Our Community background
+              ];
               return (
-                <Card key={index} className="text-center hover:shadow-elevated transition-shadow bg-card">
-                  <CardHeader className="pb-4">
-                    <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <IconComponent className="h-8 w-8 text-primary" />
+                <div key={index} className={`${bgColors[index]} rounded-3xl p-8 hover:scale-105 transition-all duration-300 cursor-pointer group`}>
+                  <div className="text-center space-y-6">
+                    <div className={`bg-gradient-to-br ${colors[index]} w-20 h-20 rounded-2xl flex items-center justify-center mx-auto shadow-lg group-hover:shadow-xl transition-all duration-300`}>
+                      <IconComponent className="h-10 w-10 text-white" />
                     </div>
-                    <CardTitle className="text-xl">{value.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {value.description}
-                    </p>
-                  </CardContent>
-                </Card>
+                    <div className="space-y-3">
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {value.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {value.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>
