@@ -331,104 +331,37 @@ const Contact = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-gradient-to-br from-orange-50 via-white to-orange-50">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                Frequently Asked Questions
-              </h2>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Quick answers to common questions about our services and platform.
-              </p>
-              
-              <div className="space-y-6">
-                {faqs.slice(0, 3).map((faq, index) => (
-                  <div key={index} className="space-y-2">
-                    <h3 className="font-semibold text-lg text-gray-900">{faq.question}</h3>
-                    <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
-                  </div>
-                ))}
-              </div>
-              
-              <Button variant="outline" size="lg" className="border-gray-300 text-gray-700 hover:bg-gray-100">
-                View All FAQs
-              </Button>
-            </div>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Quick answers to common questions about our services and platform.
+            </p>
+          </div>
 
-            {/* Phone Mockup */}
-            <div className="relative flex justify-center">
-              <div className="relative">
-                {/* Phone Frame */}
-                <div className="w-80 h-[600px] bg-gray-900 rounded-[3rem] p-2 shadow-2xl">
-                  <div className="w-full h-full bg-white rounded-[2.5rem] relative overflow-hidden">
-                    {/* Status Bar */}
-                    <div className="h-8 bg-gray-100 flex items-center justify-center">
-                      <div className="w-32 h-6 bg-black rounded-full"></div>
-                    </div>
-                    
-                    {/* Screen Content */}
-                    <div className="p-6 text-center h-full bg-gradient-to-b from-orange-500 to-orange-600 text-white flex flex-col justify-center">
-                      <h3 className="text-xl font-bold mb-6">Quick Support</h3>
-                      
-                      <div className="space-y-4 mb-6">
-                        <div className="bg-white/20 rounded-lg p-3 text-left">
-                          <div className="text-sm font-semibold mb-1">24/7 Help Available</div>
-                          <div className="text-xs opacity-90">Call: +91 9608792602</div>
-                        </div>
-                        <div className="bg-white/20 rounded-lg p-3 text-left">
-                          <div className="text-sm font-semibold mb-1">Email Support</div>
-                          <div className="text-xs opacity-90">info@kisansevaplus.com</div>
-                        </div>
-                        <div className="bg-white/20 rounded-lg p-3 text-left">
-                          <div className="text-sm font-semibold mb-1">Live Chat</div>
-                          <div className="text-xs opacity-90">Available in app</div>
-                        </div>
-                      </div>
-                      
-                      {/* QR Code */}
-                      <div className="w-32 h-32 bg-white rounded-lg mx-auto mb-4 flex items-center justify-center">
-                        <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <div className="grid grid-cols-3 gap-1">
-                            {[...Array(9)].map((_, i) => (
-                              <div key={i} className="w-2 h-2 bg-gray-800 rounded-sm"></div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <p className="text-xs opacity-80">Scan for instant help</p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* App Store Buttons */}
-                <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 flex gap-4">
-                  <Button className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center">
-                        <div className="w-3 h-3 border-2 border-black rounded-sm"></div>
-                      </div>
-                      <div>
-                        <div className="text-xs">GET IT ON</div>
-                        <div className="font-bold">Google Play</div>
-                      </div>
-                    </div>
-                  </Button>
-                  <Button className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center">
-                        <div className="w-3 h-3 bg-black rounded-sm"></div>
-                      </div>
-                      <div>
-                        <div className="text-xs">Download on the</div>
-                        <div className="font-bold">App Store</div>
-                      </div>
-                    </div>
-                  </Button>
-                </div>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+            {faqs.map((faq, index) => (
+              <Card key={index} className="hover:shadow-elevated transition-shadow bg-card">
+                <CardHeader>
+                  <CardTitle className="text-lg">{faq.question}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-muted-foreground mb-4">
+              Can't find what you're looking for?
+            </p>
+            <Button variant="outline" size="lg">
+              View All FAQs
+            </Button>
           </div>
         </div>
       </section>

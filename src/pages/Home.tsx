@@ -184,14 +184,14 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+            <div>
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
                 Why Choose KisanSeva Plus?
               </h2>
-              <p className="text-lg text-gray-600 leading-relaxed">
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 Built specifically for Indian farmers, our platform combines 
                 traditional farming wisdom with modern technology to create 
                 the most comprehensive agricultural marketplace.
@@ -200,15 +200,14 @@ const Home = () => {
               <div className="space-y-6">
                 {features.map((feature, index) => {
                   const IconComponent = feature.icon;
-                  const iconColors = ['bg-yellow-100 text-yellow-600', 'bg-blue-100 text-blue-600', 'bg-green-100 text-green-600'];
                   return (
                     <div key={index} className="flex items-start space-x-4">
-                      <div className={`p-3 rounded-xl flex-shrink-0 ${iconColors[index]}`}>
-                        <IconComponent className="h-6 w-6" />
+                      <div className="bg-primary/10 p-3 rounded-lg flex-shrink-0">
+                        <IconComponent className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-lg mb-2 text-gray-900">{feature.title}</h3>
-                        <p className="text-gray-600">{feature.description}</p>
+                        <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
+                        <p className="text-muted-foreground">{feature.description}</p>
                       </div>
                     </div>
                   );
@@ -216,65 +215,26 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Phone Mockup */}
-            <div className="relative flex justify-center">
-              <div className="relative">
-                {/* Phone Frame */}
-                <div className="w-80 h-[600px] bg-gray-900 rounded-[3rem] p-2 shadow-2xl">
-                  <div className="w-full h-full bg-white rounded-[2.5rem] relative overflow-hidden">
-                    {/* Status Bar */}
-                    <div className="h-8 bg-gray-100 flex items-center justify-center">
-                      <div className="w-32 h-6 bg-black rounded-full"></div>
-                    </div>
-                    
-                    {/* Screen Content */}
-                    <div className="p-6 text-center h-full bg-gradient-to-b from-blue-500 to-blue-600 text-white flex flex-col justify-center">
-                      <h3 className="text-xl font-bold mb-4">Download KisanSeva Plus</h3>
-                      <p className="text-sm opacity-90 mb-8">
-                        Access agricultural equipment and services on the go
-                      </p>
-                      
-                      {/* QR Code Placeholder */}
-                      <div className="w-32 h-32 bg-white rounded-lg mx-auto mb-6 flex items-center justify-center">
-                        <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <div className="grid grid-cols-3 gap-1">
-                            {[...Array(9)].map((_, i) => (
-                              <div key={i} className="w-2 h-2 bg-gray-800 rounded-sm"></div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <p className="text-xs opacity-80">Scan to download</p>
-                    </div>
+            <div className="relative">
+              <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-8 rounded-3xl text-foreground shadow-elevated border border-blue-200">
+                <h3 className="text-2xl font-bold mb-6 text-blue-900">Ready to Get Started?</h3>
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                    <span className="text-blue-800">Quick 2-minute registration</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                    <span className="text-blue-800">KYC verification in 24 hours</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                    <span className="text-blue-800">Start booking immediately</span>
                   </div>
                 </div>
-                
-                {/* App Store Buttons */}
-                <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 flex gap-4">
-                  <Button className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center">
-                        <div className="w-3 h-3 border-2 border-black rounded-sm"></div>
-                      </div>
-                      <div>
-                        <div className="text-xs">GET IT ON</div>
-                        <div className="font-bold">Google Play</div>
-                      </div>
-                    </div>
-                  </Button>
-                  <Button className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center">
-                        <div className="w-3 h-3 bg-black rounded-sm"></div>
-                      </div>
-                      <div>
-                        <div className="text-xs">Download on the</div>
-                        <div className="font-bold">App Store</div>
-                      </div>
-                    </div>
-                  </Button>
-                </div>
+                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 text-white" asChild>
+                  <Link to="/signup">Join KisanSeva Plus Today</Link>
+                </Button>
               </div>
             </div>
           </div>

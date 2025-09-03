@@ -194,113 +194,31 @@ const Services = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-gradient-to-br from-green-50 via-white to-green-50">
+      <section className="py-20" style={{background: 'var(--gradient-section)'}}>
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                How It Works
-              </h2>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Simple 4-step process to access agricultural services and equipment 
-                through our platform.
-              </p>
-              
-              <div className="space-y-6">
-                {processSteps.map((step, index) => {
-                  const stepColors = ['bg-green-100 text-green-600', 'bg-blue-100 text-blue-600', 'bg-purple-100 text-purple-600', 'bg-orange-100 text-orange-600'];
-                  return (
-                    <div key={index} className="flex items-start space-x-4">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${stepColors[index]} font-bold text-lg`}>
-                        {step.step}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg mb-2 text-gray-900">{step.title}</h3>
-                        <p className="text-gray-600">{step.description}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              How It Works
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Simple 4-step process to access agricultural services and equipment 
+              through our platform.
+            </p>
+          </div>
 
-            {/* Phone Mockup */}
-            <div className="relative flex justify-center">
-              <div className="relative">
-                {/* Phone Frame */}
-                <div className="w-80 h-[600px] bg-gray-900 rounded-[3rem] p-2 shadow-2xl">
-                  <div className="w-full h-full bg-white rounded-[2.5rem] relative overflow-hidden">
-                    {/* Status Bar */}
-                    <div className="h-8 bg-gray-100 flex items-center justify-center">
-                      <div className="w-32 h-6 bg-black rounded-full"></div>
-                    </div>
-                    
-                    {/* Screen Content */}
-                    <div className="p-6 text-center h-full bg-gradient-to-b from-green-500 to-green-600 text-white flex flex-col justify-center">
-                      <h3 className="text-xl font-bold mb-6">Simple Process</h3>
-                      
-                      <div className="space-y-4 mb-6">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                          <span className="text-sm">Register & Verify</span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                          <span className="text-sm">Browse & Select</span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                          <span className="text-sm">Book & Pay</span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm font-bold">4</div>
-                          <span className="text-sm">Use & Review</span>
-                        </div>
-                      </div>
-                      
-                      {/* QR Code */}
-                      <div className="w-32 h-32 bg-white rounded-lg mx-auto mb-4 flex items-center justify-center">
-                        <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <div className="grid grid-cols-3 gap-1">
-                            {[...Array(9)].map((_, i) => (
-                              <div key={i} className="w-2 h-2 bg-gray-800 rounded-sm"></div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <p className="text-xs opacity-80">Scan to start booking</p>
-                    </div>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {processSteps.map((step, index) => (
+              <div key={index} className="text-center relative">
+                {index < processSteps.length - 1 && (
+                  <div className="hidden lg:block absolute top-10 left-1/2 w-full h-0.5 bg-border transform translate-x-1/2"></div>
+                )}
+                <div className="bg-primary text-primary-foreground w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold relative z-10">
+                  {step.step}
                 </div>
-                
-                {/* App Store Buttons */}
-                <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 flex gap-4">
-                  <Button className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center">
-                        <div className="w-3 h-3 border-2 border-black rounded-sm"></div>
-                      </div>
-                      <div>
-                        <div className="text-xs">GET IT ON</div>
-                        <div className="font-bold">Google Play</div>
-                      </div>
-                    </div>
-                  </Button>
-                  <Button className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 bg-white rounded-sm flex items-center justify-center">
-                        <div className="w-3 h-3 bg-black rounded-sm"></div>
-                      </div>
-                      <div>
-                        <div className="text-xs">Download on the</div>
-                        <div className="font-bold">App Store</div>
-                      </div>
-                    </div>
-                  </Button>
-                </div>
+                <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{step.description}</p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
