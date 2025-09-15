@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations } from "@/hooks/useTranslations";
 
 const Booking = () => {
   const [searchLocation, setSearchLocation] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const { t } = useTranslations();
 
   const categories = [
     { id: "all", label: "All Equipment" },
@@ -314,7 +316,7 @@ const Booking = () => {
                       <span className="font-medium">{item.rating}</span>
                     </div>
                     <span className="text-sm text-muted-foreground">
-                      ({item.reviews} reviews)
+                      ({item.reviews} {t('rating')})
                     </span>
                   </div>
 
@@ -362,7 +364,7 @@ const Booking = () => {
                         }
                       }}
                     >
-                      {item.available ? "Book Now" : "Not Available"}
+                      {item.available ? t('bookNow') : t('unavailable')}
                     </Button>
                     <Button variant="outline" size="sm">
                       <Calendar className="h-4 w-4" />

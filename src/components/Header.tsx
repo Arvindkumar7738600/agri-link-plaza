@@ -4,21 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
+import { useTranslations } from "@/hooks/useTranslations";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { language, setLanguage } = useLanguage();
+  const { t } = useTranslations();
 
-  const languages: Language[] = ['English', 'Hindi', 'Marathi', 'Punjabi', 'Tamil'];
+  const languages: Language[] = ['English', 'Hindi', 'Marathi', 'Punjabi', 'Tamil', 'Telugu', 'Gujarati', 'Bengali'];
 
   const navigation = [
-    { name: "Home", href: "/", current: location.pathname === "/" },
-    { name: "About", href: "/about", current: location.pathname === "/about" },
-    { name: "Services", href: "/services", current: location.pathname === "/services" },
-    { name: "Book Equipment", href: "/booking", current: location.pathname === "/booking" },
-    { name: "Hire Farmers", href: "/farmers", current: location.pathname === "/farmers" },
-    { name: "Contact", href: "/contact", current: location.pathname === "/contact" },
+    { name: t('home'), href: "/", current: location.pathname === "/" },
+    { name: t('about'), href: "/about", current: location.pathname === "/about" },
+    { name: t('services'), href: "/services", current: location.pathname === "/services" },
+    { name: t('bookEquipment'), href: "/booking", current: location.pathname === "/booking" },
+    { name: t('hireFarmers'), href: "/farmers", current: location.pathname === "/farmers" },
+    { name: t('contact'), href: "/contact", current: location.pathname === "/contact" },
   ];
 
   return (
@@ -80,7 +82,7 @@ const Header = () => {
               className="relative overflow-hidden group bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
             >
               <Link to="/login" className="relative z-10">
-                <span>Login</span>
+                <span>{t('login')}</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
             </Button>
@@ -127,7 +129,7 @@ const Header = () => {
                   size="sm" 
                   asChild
                 >
-                  <Link to="/login">Login</Link>
+                  <Link to="/login">{t('login')}</Link>
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

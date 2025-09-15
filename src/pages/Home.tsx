@@ -5,31 +5,33 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-agriculture.jpg";
+import { useTranslations } from "@/hooks/useTranslations";
 
 const Home = () => {
+  const { t } = useTranslations();
   const services = [
     {
       icon: Tractor,
-      title: "Equipment Rental",
-      description: "Rent tractors, harvesters, and other agricultural machinery from verified owners",
+      title: t('equipmentRental'),
+      description: t('equipmentRentalDesc'),
       link: "/booking"
     },
     {
       icon: Users,
-      title: "Farmer Hiring",
-      description: "Connect with skilled farmers and agricultural workers for your farming needs",
+      title: t('farmerHiring'),
+      description: t('farmerHiringDesc'),
       link: "/farmers"
     },
     {
       icon: MapPin,
-      title: "Location-Based Search",
-      description: "Find equipment and services near your location with GPS integration",
+      title: t('locationSearch'),
+      description: t('locationSearchDesc'),
       link: "/services"
     },
     {
       icon: Shield,
-      title: "Verified Users",
-      description: "All users are KYC verified for safe and secure transactions",
+      title: t('verifiedUsers'),
+      description: t('verifiedUsersDesc'),
       link: "/about"
     }
   ];
@@ -62,47 +64,47 @@ const Home = () => {
             <div className="space-y-8">
               <div>
                 <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">
-                  Connecting <span className="text-yellow-300">Farmer</span>
-                  <br />with Agricultural
-                  <br />Solutions
+                  {t('connectingFarmer')} <span className="text-yellow-300">{t('farmer')}</span>
+                  <br />{t('withAgricultural')}
+                  <br />{t('solutions')}
                 </h1>
                 <p className="text-lg lg:text-xl opacity-90 mb-6 leading-relaxed">
-                  Rent tractors, hire skilled farmers, and access agricultural equipment across India. Making farming efficient and profitable for everyone.
+                  {t('heroDescription')}
                 </p>
                 <p className="text-sm opacity-80 italic">
-                  Built by student entrepreneurs from IIT Madras who understand farming communities
+                  {t('builtBy')}
                 </p>
               </div>
 
               {/* Search Card */}
               <Card className="bg-white text-gray-900 shadow-2xl">
                 <CardHeader>
-                  <CardTitle className="text-xl text-gray-900">Find Services Near You</CardTitle>
+                  <CardTitle className="text-xl text-gray-900">{t('findServices')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">Service Type</label>
+                      <label className="text-sm font-medium text-gray-700">{t('serviceType')}</label>
                       <Select>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select Service" />
+                          <SelectValue placeholder={t('selectService')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="tractor">Tractor Rental</SelectItem>
-                          <SelectItem value="harvester">Harvester Rental</SelectItem>
-                          <SelectItem value="farmer">Hire Farmers</SelectItem>
-                          <SelectItem value="equipment">Other Equipment</SelectItem>
+                          <SelectItem value="tractor">{t('tractorRental')}</SelectItem>
+                          <SelectItem value="harvester">{t('harvesterRental')}</SelectItem>
+                          <SelectItem value="farmer">{t('hireFarmersOption')}</SelectItem>
+                          <SelectItem value="equipment">{t('otherEquipment')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">Location</label>
-                      <Input placeholder="Enter city or pin code" className="w-full" />
+                      <label className="text-sm font-medium text-gray-700">{t('location')}</label>
+                      <Input placeholder={t('enterLocation')} className="w-full" />
                     </div>
                   </div>
                   <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
                     <Search className="w-4 h-4 mr-2" />
-                    Search
+                    {t('search')}
                   </Button>
                 </CardContent>  
               </Card>

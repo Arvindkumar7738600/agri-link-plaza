@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export type Language = 'English' | 'Hindi' | 'Marathi' | 'Punjabi' | 'Tamil';
+export type Language = 'English' | 'Hindi' | 'Marathi' | 'Punjabi' | 'Tamil' | 'Telugu' | 'Gujarati' | 'Bengali';
 
 interface LanguageContextType {
   language: Language;

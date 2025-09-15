@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations } from "@/hooks/useTranslations";
 
 const Farmers = () => {
   const [searchLocation, setSearchLocation] = useState("");
   const [selectedSkill, setSelectedSkill] = useState("all");
+  const { t } = useTranslations();
 
   const skills = [
     { id: "all", label: "All Skills" },
