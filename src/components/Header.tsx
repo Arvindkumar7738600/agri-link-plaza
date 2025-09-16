@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { Menu, X, Globe, ChevronDown } from "lucide-react";
+import { Menu, X, Globe, ChevronDown, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "react-router-dom";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { useTranslations } from "@/hooks/useTranslations";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { language, setLanguage } = useLanguage();
   const { t } = useTranslations();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const languages: Language[] = ['English', 'Hindi', 'Marathi', 'Punjabi', 'Tamil', 'Telugu', 'Gujarati', 'Bengali'];
 
@@ -22,6 +26,11 @@ const Header = () => {
     { name: t('hireFarmers'), href: "/farmers", current: location.pathname === "/farmers" },
     { name: t('contact'), href: "/contact", current: location.pathname === "/contact" },
   ];
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-background/95">
@@ -53,7 +62,7 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Language Selector & Login */}
+          {/* Language Selector & User Actions */}
           <div className="hidden md:flex items-center space-x-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -75,17 +84,49 @@ const Header = () => {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              asChild 
-              className="relative overflow-hidden group bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
-            >
-              <Link to="/login" className="relative z-10">
-                <span>{t('login')}</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </Link>
-            </Button>
+
+            {/* User Profile or Login Button */}
+            {isAuthenticated && user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-muted">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.profileImage} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                        {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-medium">{user.firstName}</span>
+                    <ChevronDown className="h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur-sm">
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard" className="flex items-center cursor-pointer">
+                      <User className="h-4 w-4 mr-2" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="flex items-center cursor-pointer text-destructive">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                asChild 
+                className="relative overflow-hidden group bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
+              >
+                <Link to="/login" className="relative z-10">
+                  <span>{t('login')}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </Link>
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -124,13 +165,46 @@ const Header = () => {
                 </Link>
               ))}
               <div className="pt-4 mx-2 border-t border-border/50">
-                <Button 
-                  className="w-full mb-3 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25 transition-all duration-300" 
-                  size="sm" 
-                  asChild
-                >
-                  <Link to="/login">{t('login')}</Link>
-                </Button>
+                {isAuthenticated && user ? (
+                  <>
+                    <div className="flex items-center space-x-3 mb-3 px-4 py-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.profileImage} />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                          {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm font-medium">{user.firstName} {user.lastName}</span>
+                    </div>
+                    <Button 
+                      className="w-full mb-3 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25 transition-all duration-300" 
+                      size="sm" 
+                      asChild
+                    >
+                      <Link to="/dashboard">
+                        <User className="h-4 w-4 mr-2" />
+                        Dashboard
+                      </Link>
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="w-full mb-3 text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground" 
+                      size="sm" 
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <Button 
+                    className="w-full mb-3 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25 transition-all duration-300" 
+                    size="sm" 
+                    asChild
+                  >
+                    <Link to="/login">{t('login')}</Link>
+                  </Button>
+                )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="w-full flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-accent/10 to-secondary/10 backdrop-blur-sm border border-border/50">

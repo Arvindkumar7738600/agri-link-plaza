@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -19,6 +20,14 @@ const Login = () => {
   
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   // Timer for resend OTP
   useEffect(() => {
@@ -101,13 +110,14 @@ const Login = () => {
       // });
       
       // For demo purposes, accept any 6-digit OTP
+      login(phoneNumber, {});
       toast({
         title: "Login Successful",
         description: "Welcome to KisanSeva Plus!",
       });
       
-      // Redirect to dashboard or home
-      navigate('/');
+      // Redirect to dashboard
+      navigate('/dashboard');
     } catch (error) {
       setOtpError("Invalid OTP. Please try again.");
       toast({
@@ -147,13 +157,15 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
-      {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800"></div>
-      
+    <div 
+      className="min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/src/assets/hero-agriculture.jpg')`
+      }}
+    >      
       {/* Animated Background Elements */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-secondary/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
       
       <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
@@ -205,7 +217,7 @@ const Login = () => {
                     </div>
                     
                     <Button 
-                      className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-pink-500/25 border-0" 
+                      className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary-dark hover:to-secondary-dark text-white font-semibold py-3 rounded-xl shadow-lg border-0" 
                       onClick={handleSendOtp}
                       disabled={isLoading}
                     >
@@ -266,7 +278,7 @@ const Login = () => {
                     </div>
                     
                     <Button 
-                      className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-pink-500/25 border-0" 
+                      className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary-dark hover:to-secondary-dark text-white font-semibold py-3 rounded-xl shadow-lg border-0" 
                       onClick={handleVerifyOtp}
                       disabled={isVerifying || otp.length !== 6}
                     >
@@ -320,7 +332,7 @@ const Login = () => {
                 
                 <div className="text-center text-sm text-white/70 mt-6">
                   Don't have an account?{" "}
-                  <Link to="/signup" className="text-pink-300 font-medium hover:text-pink-200 underline">
+                  <Link to="/signup" className="text-primary-light font-medium hover:text-primary underline">
                     Sign up here
                   </Link>
                 </div>
