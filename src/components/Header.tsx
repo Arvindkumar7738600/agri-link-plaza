@@ -24,6 +24,7 @@ const Header = () => {
     { name: t('services'), href: "/services", current: location.pathname === "/services" },
     { name: t('bookEquipment'), href: "/booking", current: location.pathname === "/booking" },
     { name: t('hireFarmers'), href: "/farmers", current: location.pathname === "/farmers" },
+    { name: "FPO", href: "/fpo", current: location.pathname === "/fpo" },
     { name: t('contact'), href: "/contact", current: location.pathname === "/contact" },
   ];
 
