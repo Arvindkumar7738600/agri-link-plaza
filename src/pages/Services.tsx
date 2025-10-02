@@ -1,4 +1,4 @@
-import { Tractor, Users, MapPin, Shield, Clock, Phone } from "lucide-react";
+import { Tractor, Users, MapPin, Shield, Clock, Phone, Leaf } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -32,6 +32,20 @@ const Services = () => {
       ],
       pricing: "Starting from ₹300/day",
       link: "/farmers"
+    },
+    {
+      icon: Leaf,
+      title: "FPO Services",
+      description: "Join Farmer Producer Organizations for collective growth",
+      features: [
+        "FPO Registration Support",
+        "Collective Bargaining Power",
+        "Access to Better Markets",
+        "Shared Resources & Equipment",
+        "Government Scheme Benefits"
+      ],
+      pricing: "Free consultation available",
+      link: "/fpo"
     }
   ];
 
@@ -100,7 +114,7 @@ const Services = () => {
       {/* Main Services */}
       <section className="py-20" style={{background: 'var(--gradient-light)'}}>
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {mainServices.map((service, index) => {
               const IconComponent = service.icon;
               return (

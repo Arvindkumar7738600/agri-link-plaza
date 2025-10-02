@@ -10,6 +10,10 @@ import upImage from "@/assets/state-up.jpg";
 import karnatakaImage from "@/assets/state-karnataka.jpg";
 import tamilnaduImage from "@/assets/state-tamilnadu.jpg";
 import gujaratImage from "@/assets/state-gujarat.jpg";
+import jharkhandImage from "@/assets/state-jharkhand.jpg";
+import biharImage from "@/assets/state-bihar.jpg";
+import chhattisgarhImage from "@/assets/state-chhattisgarh.jpg";
+import westBengalImage from "@/assets/state-westbengal.jpg";
 
 const FPO = () => {
   const statesData = [
@@ -21,7 +25,8 @@ const FPO = () => {
       farmers: "120,000+",
       description: "Punjab leads in mechanized farming with FPOs specializing in wheat and rice production. Strong cooperative networks and government support have made Punjab a model state for FPO implementation.",
       highlights: ["Highest per capita income", "Advanced machinery sharing", "Export-oriented production"],
-      color: "from-amber-400 to-yellow-500"
+      color: "from-amber-400 to-yellow-500",
+      website: "https://agri.punjab.gov.in"
     },
     {
       name: "Maharashtra",
@@ -31,7 +36,8 @@ const FPO = () => {
       farmers: "200,000+",
       description: "Maharashtra has the largest number of FPOs focusing on sugarcane cooperatives and cotton production. The state's diverse agro-climatic zones support various FPO models from tribal areas to urban farming.",
       highlights: ["Largest FPO network", "Sugar cooperatives model", "Organic farming initiatives"],
-      color: "from-orange-400 to-red-500"
+      color: "from-orange-400 to-red-500",
+      website: "https://krishi.maharashtra.gov.in"
     },
     {
       name: "Uttar Pradesh",
@@ -41,7 +47,8 @@ const FPO = () => {
       farmers: "180,000+",
       description: "UP's FPOs are transforming traditional farming with focus on sustainable practices and value addition. The state's large agricultural workforce benefits from collective bargaining and shared resources.",
       highlights: ["Largest farming population", "Grain marketing excellence", "Food processing units"],
-      color: "from-green-400 to-emerald-500"
+      color: "from-green-400 to-emerald-500",
+      website: "https://agriculture.up.gov.in"
     },
     {
       name: "Karnataka",
@@ -51,7 +58,8 @@ const FPO = () => {
       farmers: "95,000+",
       description: "Karnataka's FPOs excel in high-value crops like coffee and spices. The state pioneered FPO-based organic farming and direct market linkages, setting benchmarks for premium agricultural products.",
       highlights: ["Coffee export leader", "Organic certification", "Tech-enabled farming"],
-      color: "from-purple-400 to-indigo-500"
+      color: "from-purple-400 to-indigo-500",
+      website: "https://raitamitra.karnataka.gov.in"
     },
     {
       name: "Tamil Nadu",
@@ -61,7 +69,8 @@ const FPO = () => {
       farmers: "105,000+",
       description: "Tamil Nadu's FPOs are known for innovative water management and integrated farming systems. Strong focus on women-led FPOs and agri-processing has created sustainable livelihood opportunities.",
       highlights: ["Women-led FPOs", "Water management", "Agri-processing hubs"],
-      color: "from-blue-400 to-cyan-500"
+      color: "from-blue-400 to-cyan-500",
+      website: "https://www.tn.gov.in/department/2"
     },
     {
       name: "Gujarat",
@@ -71,7 +80,52 @@ const FPO = () => {
       farmers: "90,000+",
       description: "Gujarat's FPOs benefit from strong cooperative culture and entrepreneurial spirit. Focus on dairy integration, cotton marketing, and sustainable agriculture has made Gujarat FPOs financially robust.",
       highlights: ["Dairy-farm integration", "Cotton marketing", "Financial sustainability"],
-      color: "from-pink-400 to-rose-500"
+      color: "from-pink-400 to-rose-500",
+      website: "https://agri.gujarat.gov.in"
+    },
+    {
+      name: "Jharkhand",
+      image: jharkhandImage,
+      fpoCount: "280+",
+      mainCrops: "Rice, Maize, Pulses",
+      farmers: "75,000+",
+      description: "Jharkhand's FPOs focus on tribal empowerment and sustainable forest-based agriculture. Integration of traditional knowledge with modern practices has created unique livelihood models in tribal regions.",
+      highlights: ["Tribal empowerment", "Forest-based farming", "Traditional crop preservation"],
+      color: "from-teal-400 to-green-500",
+      website: "https://jharkhand.gov.in/Home/DepartmentDetails/Agriculture"
+    },
+    {
+      name: "Bihar",
+      image: biharImage,
+      fpoCount: "460+",
+      mainCrops: "Rice, Wheat, Maize",
+      farmers: "150,000+",
+      description: "Bihar's FPOs are driving agricultural transformation through cooperative farming and value addition. Focus on grain banking, seed production, and organic farming is improving farmer incomes significantly.",
+      highlights: ["Grain banking systems", "Seed production centers", "Cooperative farming model"],
+      color: "from-yellow-400 to-amber-500",
+      website: "https://state.bihar.gov.in/krishi/CitizenHome.html"
+    },
+    {
+      name: "Chhattisgarh",
+      image: chhattisgarhImage,
+      fpoCount: "310+",
+      mainCrops: "Rice, Maize, Pulses",
+      farmers: "85,000+",
+      description: "Chhattisgarh's FPOs specialize in rice cultivation and forest produce collection. The state's unique FPO models integrate minor forest products with agricultural production for diversified income.",
+      highlights: ["Rice bowl initiatives", "Forest produce marketing", "Organic farming zones"],
+      color: "from-red-400 to-orange-500",
+      website: "https://agridept.cg.gov.in"
+    },
+    {
+      name: "West Bengal",
+      image: westBengalImage,
+      fpoCount: "420+",
+      mainCrops: "Rice, Jute, Vegetables",
+      farmers: "125,000+",
+      description: "West Bengal's FPOs focus on rice and horticultural crops with strong emphasis on vegetable and fruit production. Proximity to markets and export facilities provides competitive advantage.",
+      highlights: ["Vegetable production hubs", "Jute cooperatives", "Export linkages"],
+      color: "from-emerald-400 to-teal-500",
+      website: "https://wb.gov.in/portal/web/guest/agriculture"
     }
   ];
 
@@ -141,10 +195,15 @@ const FPO = () => {
               better market access, and sustainable farming practices across states.
             </p>
             <div className="flex gap-4 pt-4">
-              <Button size="lg" className="bg-primary hover:bg-primary/90">
-                Join an FPO
+              <Button size="lg" className="bg-primary hover:bg-primary/90" asChild>
+                <Link to="/contact">Join an FPO</Link>
               </Button>
-              <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white/20">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="bg-white/10 border-white text-white hover:bg-white/20"
+                onClick={() => document.getElementById('fpo-info')?.scrollIntoView({ behavior: 'smooth' })}
+              >
                 Learn More
               </Button>
             </div>
@@ -171,7 +230,7 @@ const FPO = () => {
       </section>
 
       {/* What is FPO Section */}
-      <section className="py-20 bg-background">
+      <section id="fpo-info" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-6 mb-16">
             <h2 className="text-4xl font-bold text-foreground">
@@ -242,7 +301,11 @@ const FPO = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {statesData.map((state, index) => (
-              <Card key={index} className="overflow-hidden hover:shadow-2xl transition-all duration-300 group">
+              <Card 
+                key={index} 
+                className="overflow-hidden hover:shadow-2xl transition-all duration-300 group cursor-pointer"
+                onClick={() => window.open(state.website, '_blank')}
+              >
                 <div className="relative h-64 overflow-hidden">
                   <img 
                     src={state.image}
