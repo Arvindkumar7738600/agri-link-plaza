@@ -7,6 +7,8 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { signInWithPhoneNumber, ConfirmationResult } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 const Login = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -17,10 +19,11 @@ const Login = () => {
   const [resendTimer, setResendTimer] = useState(0);
   const [phoneError, setPhoneError] = useState("");
   const [otpError, setOtpError] = useState("");
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, setupRecaptcha } = useAuth();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -61,26 +64,24 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Simulate API call to send OTP
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const recaptchaVerifier = setupRecaptcha('recaptcha-container');
+      const formattedPhone = `+91${phoneNumber}`;
       
-      // In real implementation, call your SMS service API here
-      // const response = await fetch('/api/send-otp', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ phoneNumber: `+91${phoneNumber}` })
-      // });
-      
+      const confirmation = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
+      setConfirmationResult(confirmation);
       setIsOtpSent(true);
-      setResendTimer(30); // 30 seconds cooldown
+      setResendTimer(30);
+      
       toast({
         title: "OTP Sent Successfully",
         description: `Verification code sent to +91 ${phoneNumber}`,
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error sending OTP:', error);
+      setPhoneError(error.message || "Failed to send OTP");
       toast({
         title: "Failed to Send OTP",
-        description: "Please try again later",
+        description: error.message || "Please try again later",
         variant: "destructive",
       });
     } finally {
@@ -96,29 +97,27 @@ const Login = () => {
       return;
     }
 
+    if (!confirmationResult) {
+      setOtpError("Please resend OTP");
+      return;
+    }
+
     setIsVerifying(true);
     
     try {
-      // Simulate API call to verify OTP
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await confirmationResult.confirm(otp);
       
-      // In real implementation, call your verification API here
-      // const response = await fetch('/api/verify-otp', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ phoneNumber: `+91${phoneNumber}`, otp })
-      // });
+      // Store user data in Firestore
+      await login(phoneNumber, {});
       
-      // For demo purposes, accept any 6-digit OTP
-      login(phoneNumber, {});
       toast({
         title: "Login Successful",
         description: "Welcome to KisanSeva Plus!",
       });
       
-      // Redirect to dashboard
       navigate('/dashboard');
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error verifying OTP:', error);
       setOtpError("Invalid OTP. Please try again.");
       toast({
         title: "Invalid OTP",
@@ -162,7 +161,10 @@ const Login = () => {
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/src/assets/hero-agriculture.jpg')`
       }}
-    >      
+    >
+      {/* Hidden reCAPTCHA container */}
+      <div id="recaptcha-container"></div>
+      
       {/* Animated Background Elements */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-secondary/20 rounded-full blur-3xl animate-pulse delay-1000"></div>

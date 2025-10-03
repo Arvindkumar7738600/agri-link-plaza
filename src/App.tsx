@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -36,15 +37,15 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/booking" element={<Booking />} />
-                <Route path="/booking-details" element={<BookingDetails />} />
-                <Route path="/farmers" element={<Farmers />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/fpo" element={<FPO />} />
+                <Route path="/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
+                <Route path="/booking" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
+                <Route path="/booking-details" element={<ProtectedRoute><BookingDetails /></ProtectedRoute>} />
+                <Route path="/farmers" element={<ProtectedRoute><Farmers /></ProtectedRoute>} />
+                <Route path="/fpo" element={<ProtectedRoute><FPO /></ProtectedRoute>} />
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
