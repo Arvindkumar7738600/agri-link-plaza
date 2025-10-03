@@ -9,9 +9,6 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { signInWithPhoneNumber, ConfirmationResult } from 'firebase/auth';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { auth, storage } from '@/lib/firebase';
 
 const Signup = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -19,7 +16,6 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   
   // Form data
   const [formData, setFormData] = useState({
@@ -37,7 +33,7 @@ const Signup = () => {
   
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { login, isAuthenticated, setupRecaptcha } = useAuth();
+  const { login, isAuthenticated } = useAuth();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -75,11 +71,7 @@ const Signup = () => {
   const handleSendOtp = async () => {
     setIsLoading(true);
     try {
-      const recaptchaVerifier = setupRecaptcha('recaptcha-container-signup');
-      const formattedPhone = `+91${formData.phoneNumber}`;
-      
-      const confirmation = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
-      setConfirmationResult(confirmation);
+      await new Promise(resolve => setTimeout(resolve, 1500));
       setIsOtpSent(true);
       setResendTimer(60);
       
@@ -87,11 +79,10 @@ const Signup = () => {
         title: "OTP Sent Successfully",
         description: `Verification code sent to +91 ${formData.phoneNumber}`,
       });
-    } catch (error: any) {
-      console.error('Error sending OTP:', error);
+    } catch (error) {
       toast({
         title: "Failed to Send OTP",
-        description: error.message || "Please try again later",
+        description: "Please try again later",
         variant: "destructive",
       });
     } finally {
@@ -104,22 +95,16 @@ const Signup = () => {
       setErrors({ otp: 'Please enter complete 6-digit OTP' });
       return;
     }
-
-    if (!confirmationResult) {
-      setErrors({ otp: 'Please resend OTP' });
-      return;
-    }
     
     setIsVerifying(true);
     try {
-      await confirmationResult.confirm(formData.otp);
+      await new Promise(resolve => setTimeout(resolve, 1500));
       setCurrentStep(3);
       toast({
         title: "Phone Verified",
         description: "Phone number verified successfully",
       });
-    } catch (error: any) {
-      console.error('Error verifying OTP:', error);
+    } catch (error) {
       setErrors({ otp: 'Invalid OTP. Please try again.' });
     } finally {
       setIsVerifying(false);
@@ -138,14 +123,13 @@ const Signup = () => {
 
     setIsLoading(true);
     try {
-      // Upload Aadhaar document to Firebase Storage
-      const timestamp = Date.now();
-      const documentRef = ref(storage, `documents/${auth.currentUser?.uid}/${timestamp}_aadhaar`);
-      await uploadBytes(documentRef, formData.aadhaarFile);
-      const documentUrl = await getDownloadURL(documentRef);
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Register user with all details in Firestore
-      await login(formData.phoneNumber, {
+      // Simulate document URL (in production, upload to your backend)
+      const documentUrl = `documents/${Date.now()}_${formData.aadhaarFile.name}`;
+      
+      // Register user with all details including document
+      login(formData.phoneNumber, {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
@@ -160,11 +144,10 @@ const Signup = () => {
       });
       
       navigate('/dashboard');
-    } catch (error: any) {
-      console.error('Error completing registration:', error);
+    } catch (error) {
       toast({
         title: "Registration Failed",
-        description: error.message || "Please try again later",
+        description: "Please try again later",
         variant: "destructive",
       });
     } finally {
@@ -191,9 +174,6 @@ const Signup = () => {
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/src/assets/hero-agriculture.jpg')`
       }}
     >
-      {/* Hidden reCAPTCHA container */}
-      <div id="recaptcha-container-signup"></div>
-      
       {/* Animated Background Elements */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-secondary/20 rounded-full blur-3xl animate-pulse delay-1000"></div>

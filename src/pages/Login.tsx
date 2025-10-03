@@ -7,8 +7,6 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { signInWithPhoneNumber, ConfirmationResult } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
 
 const Login = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -19,11 +17,10 @@ const Login = () => {
   const [resendTimer, setResendTimer] = useState(0);
   const [phoneError, setPhoneError] = useState("");
   const [otpError, setOtpError] = useState("");
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { login, isAuthenticated, setupRecaptcha } = useAuth();
+  const { login, isAuthenticated } = useAuth();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -64,11 +61,8 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      const recaptchaVerifier = setupRecaptcha('recaptcha-container');
-      const formattedPhone = `+91${phoneNumber}`;
-      
-      const confirmation = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
-      setConfirmationResult(confirmation);
+      // Simulate OTP send
+      await new Promise(resolve => setTimeout(resolve, 1500));
       setIsOtpSent(true);
       setResendTimer(30);
       
@@ -76,12 +70,10 @@ const Login = () => {
         title: "OTP Sent Successfully",
         description: `Verification code sent to +91 ${phoneNumber}`,
       });
-    } catch (error: any) {
-      console.error('Error sending OTP:', error);
-      setPhoneError(error.message || "Failed to send OTP");
+    } catch (error) {
       toast({
         title: "Failed to Send OTP",
-        description: error.message || "Please try again later",
+        description: "Please try again later",
         variant: "destructive",
       });
     } finally {
@@ -97,18 +89,14 @@ const Login = () => {
       return;
     }
 
-    if (!confirmationResult) {
-      setOtpError("Please resend OTP");
-      return;
-    }
-
     setIsVerifying(true);
     
     try {
-      await confirmationResult.confirm(otp);
+      // Simulate OTP verification
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Store user data in Firestore
-      await login(phoneNumber, {});
+      // Store user data with login time
+      login(phoneNumber, {});
       
       toast({
         title: "Login Successful",
@@ -116,8 +104,7 @@ const Login = () => {
       });
       
       navigate('/dashboard');
-    } catch (error: any) {
-      console.error('Error verifying OTP:', error);
+    } catch (error) {
       setOtpError("Invalid OTP. Please try again.");
       toast({
         title: "Invalid OTP",
@@ -162,9 +149,6 @@ const Login = () => {
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/src/assets/hero-agriculture.jpg')`
       }}
     >
-      {/* Hidden reCAPTCHA container */}
-      <div id="recaptcha-container"></div>
-      
       {/* Animated Background Elements */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-secondary/20 rounded-full blur-3xl animate-pulse delay-1000"></div>

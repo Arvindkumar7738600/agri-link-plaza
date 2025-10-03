@@ -1,14 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  signInWithPhoneNumber, 
-  RecaptchaVerifier, 
-  signOut,
-  onAuthStateChanged,
-  User as FirebaseUser
-} from 'firebase/auth';
-import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { auth, db, storage } from '@/lib/firebase';
 
 interface User {
   id: string;
@@ -20,18 +10,25 @@ interface User {
   isKycVerified: boolean;
   profileImage?: string;
   documentUrl?: string;
-  loginTime?: any;
-  createdAt?: any;
+  loginTime?: string;
+  createdAt?: string;
+  bookingHistory: BookingRecord[];
+}
+
+interface BookingRecord {
+  id: string;
+  serviceName: string;
+  date: string;
+  status: 'completed' | 'ongoing' | 'cancelled';
+  amount: number;
 }
 
 interface AuthContextType {
   user: User | null;
-  firebaseUser: FirebaseUser | null;
   isAuthenticated: boolean;
-  login: (phoneNumber: string, userData: Partial<User>) => Promise<void>;
-  logout: () => Promise<void>;
-  updateUser: (userData: Partial<User>) => Promise<void>;
-  setupRecaptcha: (containerId: string) => RecaptchaVerifier;
+  login: (phoneNumber: string, userData: Partial<User>) => void;
+  logout: () => void;
+  updateUser: (userData: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -46,54 +43,22 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setFirebaseUser(firebaseUser);
-        setIsAuthenticated(true);
-        
-        // Fetch user data from Firestore
-        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-        if (userDoc.exists()) {
-          setUser(userDoc.data() as User);
-          
-          // Update login time
-          await updateDoc(doc(db, 'users', firebaseUser.uid), {
-            loginTime: serverTimestamp()
-          });
-        }
-      } else {
-        setFirebaseUser(null);
-        setUser(null);
-        setIsAuthenticated(false);
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    // Check localStorage for existing user
+    const storedUser = localStorage.getItem('kisanseva_user');
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      setUser(userData);
+      setIsAuthenticated(true);
+    }
   }, []);
 
-  const setupRecaptcha = (containerId: string) => {
-    return new RecaptchaVerifier(auth, containerId, {
-      size: 'invisible',
-      callback: () => {
-        // reCAPTCHA solved
-      }
-    });
-  };
-
-  const login = async (phoneNumber: string, userData: Partial<User> = {}) => {
-    if (!auth.currentUser) return;
-
-    const userId = auth.currentUser.uid;
-    const userRef = doc(db, 'users', userId);
-    
-    const userDocData: User = {
-      id: userId,
+  const login = (phoneNumber: string, userData: Partial<User> = {}) => {
+    const now = new Date().toISOString();
+    const newUser: User = {
+      id: Date.now().toString(),
       firstName: userData.firstName || '',
       lastName: userData.lastName || '',
       email: userData.email || '',
@@ -102,47 +67,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isKycVerified: userData.isKycVerified || false,
       profileImage: userData.profileImage,
       documentUrl: userData.documentUrl,
-      loginTime: serverTimestamp(),
-      createdAt: serverTimestamp()
+      loginTime: now,
+      createdAt: userData.createdAt || now,
+      bookingHistory: userData.bookingHistory || []
     };
-
-    await setDoc(userRef, userDocData, { merge: true });
-    setUser(userDocData);
+    
+    setUser(newUser);
+    setIsAuthenticated(true);
+    localStorage.setItem('kisanseva_user', JSON.stringify(newUser));
   };
 
-  const logout = async () => {
-    await signOut(auth);
+  const logout = () => {
     setUser(null);
-    setFirebaseUser(null);
     setIsAuthenticated(false);
+    localStorage.removeItem('kisanseva_user');
   };
 
-  const updateUser = async (userData: Partial<User>) => {
-    if (!auth.currentUser) return;
-
-    const userId = auth.currentUser.uid;
-    const userRef = doc(db, 'users', userId);
-    
-    await updateDoc(userRef, userData);
-    
+  const updateUser = (userData: Partial<User>) => {
     if (user) {
-      setUser({ ...user, ...userData });
+      const updatedUser = { ...user, ...userData };
+      setUser(updatedUser);
+      localStorage.setItem('kisanseva_user', JSON.stringify(updatedUser));
     }
   };
-
-  if (loading) {
-    return null;
-  }
 
   return (
     <AuthContext.Provider value={{
       user,
-      firebaseUser,
       isAuthenticated,
       login,
       logout,
-      updateUser,
-      setupRecaptcha
+      updateUser
     }}>
       {children}
     </AuthContext.Provider>
