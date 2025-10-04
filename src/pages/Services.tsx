@@ -2,49 +2,52 @@ import { Tractor, Users, MapPin, Shield, Clock, Phone, Leaf } from "lucide-react
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useTranslations } from "@/hooks/useTranslations";
 
 const Services = () => {
+  const { t } = useTranslations();
+  
   const mainServices = [
     {
       icon: Tractor,
-      title: "Equipment Rental",
-      description: "Comprehensive agricultural machinery rental services",
+      title: t('equipmentRental'),
+      description: t('comprehensiveRentalServices'),
       features: [
-        "Tractors (20HP to 100HP)",
-        "Harvesters & Combines",
-        "Tillers & Cultivators", 
-        "Irrigation Equipment",
-        "Spraying Systems"
+        t('tractors'),
+        t('harvestersAndCombines'),
+        t('tillersAndCultivators'),
+        t('irrigationEquipment'),
+        t('sprayingSystems')
       ],
-      pricing: "Starting from ₹500/hour",
+      pricing: t('startingFromHour'),
       link: "/booking"
     },
     {
       icon: Users,
-      title: "Farmer Hiring",
-      description: "Connect with skilled agricultural professionals",
+      title: t('farmerHiring'),
+      description: t('connectWithSkilled'),
       features: [
-        "Experienced Farm Workers",
-        "Tractor Operators",
-        "Harvest Specialists",
-        "Irrigation Experts",
-        "Agricultural Consultants"
+        t('experiencedFarmWorkers'),
+        t('tractorOperators'),
+        t('harvestSpecialists'),
+        t('irrigationExperts'),
+        t('agriculturalConsultants')
       ],
-      pricing: "Starting from ₹300/day",
+      pricing: t('startingFromDay'),
       link: "/farmers"
     },
     {
       icon: Leaf,
-      title: "FPO Services",
-      description: "Join Farmer Producer Organizations for collective growth",
+      title: t('fpoServices'),
+      description: t('joinFpo'),
       features: [
-        "FPO Registration Support",
-        "Collective Bargaining Power",
-        "Access to Better Markets",
-        "Shared Resources & Equipment",
-        "Government Scheme Benefits"
+        t('fpoRegistration'),
+        t('collectiveBargaining'),
+        t('accessMarkets'),
+        t('sharedResources'),
+        t('governmentBenefits')
       ],
-      pricing: "Free consultation available",
+      pricing: t('freeConsultation'),
       link: "/fpo"
     }
   ];
@@ -52,46 +55,46 @@ const Services = () => {
   const additionalServices = [
     {
       icon: MapPin,
-      title: "Location-Based Search",
-      description: "Find services and equipment near your location with GPS integration"
+      title: t('locationBasedSearch'),
+      description: t('findServicesNear')
     },
     {
       icon: Shield,
-      title: "KYC Verification",
-      description: "All users verified for safe and secure transactions"
+      title: t('kycVerificationTitle'),
+      description: t('allUsersVerified')
     },
     {
       icon: Clock,
-      title: "24/7 Support",
-      description: "Round-the-clock customer support in multiple languages"
+      title: t('support247'),
+      description: t('roundClockSupport')
     },
     {
       icon: Phone,
-      title: "Emergency Services",
-      description: "Urgent equipment breakdown and replacement services"
+      title: t('emergencyServices'),
+      description: t('urgentEquipmentBreakdown')
     }
   ];
 
   const processSteps = [
     {
       step: "1",
-      title: "Register & Verify",
-      description: "Create account and complete KYC verification"
+      title: t('registerAndVerify'),
+      description: t('createAccountKyc')
     },
     {
       step: "2", 
-      title: "Browse & Select",
-      description: "Find equipment or farmers based on your location"
+      title: t('browseAndSelect'),
+      description: t('findEquipmentFarmers')
     },
     {
       step: "3",
-      title: "Book & Pay",
-      description: "Secure booking with flexible payment options"
+      title: t('bookAndPay'),
+      description: t('secureBookingPayment')
     },
     {
       step: "4",
-      title: "Use & Review",
-      description: "Get service and provide feedback for improvement"
+      title: t('useAndReview'),
+      description: t('getServiceFeedback')
     }
   ];
 
@@ -101,12 +104,10 @@ const Services = () => {
       <section className="py-20" style={{background: 'var(--gradient-primary)'}}>
         <div className="container mx-auto px-4 text-center text-primary-foreground">
           <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-            Our Services
+            {t('services')}
           </h1>
           <p className="text-lg lg:text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">
-            Comprehensive agricultural solutions designed to support farmers 
-            at every stage of their farming journey, from equipment rental 
-            to skilled workforce hiring.
+            {t('comprehensiveAgricultural')}
           </p>
         </div>
       </section>
@@ -128,7 +129,7 @@ const Services = () => {
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div>
-                      <h4 className="font-semibold mb-3 text-foreground">Available Services:</h4>
+                      <h4 className="font-semibold mb-3 text-foreground">{t('availableServices')}</h4>
                       <ul className="space-y-2">
                         {service.features.map((feature, idx) => (
                           <li key={idx} className="flex items-center space-x-2">
@@ -141,12 +142,12 @@ const Services = () => {
                     
                     <div className="bg-muted/50 p-4 rounded-lg">
                       <div className="text-lg font-semibold text-primary mb-2">{service.pricing}</div>
-                      <div className="text-sm text-muted-foreground">Prices vary by location and duration</div>
+                      <div className="text-sm text-muted-foreground">{t('pricesVary')}</div>
                     </div>
 
                     <Button className="w-full" size="lg" asChild style={{background: 'var(--gradient-primary)'}}>
                       <Link to={service.link}>
-                        Get Started
+                        {t('getStarted')}
                       </Link>
                     </Button>
                   </CardContent>
@@ -162,11 +163,10 @@ const Services = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              Additional Features
+              {t('additionalFeatures')}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Extra services and features that make KisanSeva Plus the most 
-              comprehensive agricultural platform in India.
+              {t('extraServices')}
             </p>
           </div>
 
@@ -212,11 +212,10 @@ const Services = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              How It Works
+              {t('howItWorks')}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Simple 4-step process to access agricultural services and equipment 
-              through our platform.
+              {t('simpleProcess')}
             </p>
           </div>
 
@@ -242,44 +241,43 @@ const Services = () => {
         <div className="container mx-auto px-4 text-primary-foreground">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-              Transparent Pricing
+              {t('transparentPricing')}
             </h2>
             <p className="text-lg opacity-90 max-w-2xl mx-auto">
-              No hidden fees, no surprise charges. Pay only for what you use 
-              with our flexible pricing structure.
+              {t('noHiddenFees')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="bg-primary-foreground/10 p-6 rounded-lg backdrop-blur-sm border border-primary-foreground/20">
-              <h3 className="text-xl font-bold mb-4">Basic Plan</h3>
+              <h3 className="text-xl font-bold mb-4">{t('basicPlan')}</h3>
               <div className="text-3xl font-bold mb-4">₹0<span className="text-lg font-normal">/month</span></div>
               <ul className="space-y-2 opacity-90">
-                <li>• 5 bookings per month</li>
-                <li>• Basic support</li>
-                <li>• Standard pricing</li>
+                <li>• {t('basicFeature1')}</li>
+                <li>• {t('basicFeature2')}</li>
+                <li>• {t('basicFeature3')}</li>
               </ul>
             </div>
 
             <div className="bg-secondary text-secondary-foreground p-6 rounded-lg transform scale-105">
-              <h3 className="text-xl font-bold mb-4">Premium Plan</h3>
+              <h3 className="text-xl font-bold mb-4">{t('premiumPlan')}</h3>
               <div className="text-3xl font-bold mb-4">₹299<span className="text-lg font-normal">/month</span></div>
               <ul className="space-y-2">
-                <li>• Unlimited bookings</li>
-                <li>• Priority support</li>
-                <li>• 10% discount on all services</li>
-                <li>• Advanced filters</li>
+                <li>• {t('premiumFeature1')}</li>
+                <li>• {t('premiumFeature2')}</li>
+                <li>• {t('premiumFeature3')}</li>
+                <li>• {t('premiumFeature4')}</li>
               </ul>
             </div>
 
             <div className="bg-primary-foreground/10 p-6 rounded-lg backdrop-blur-sm border border-primary-foreground/20">
-              <h3 className="text-xl font-bold mb-4">Enterprise</h3>
-              <div className="text-3xl font-bold mb-4">Custom</div>
+              <h3 className="text-xl font-bold mb-4">{t('enterprisePlan')}</h3>
+              <div className="text-3xl font-bold mb-4">{t('custom')}</div>
               <ul className="space-y-2 opacity-90">
-                <li>• Bulk booking discounts</li>
-                <li>• Dedicated account manager</li>
-                <li>• Custom integrations</li>
-                <li>• 24/7 priority support</li>
+                <li>• {t('enterpriseFeature1')}</li>
+                <li>• {t('enterpriseFeature2')}</li>
+                <li>• {t('enterpriseFeature3')}</li>
+                <li>• {t('enterpriseFeature4')}</li>
               </ul>
             </div>
           </div>
