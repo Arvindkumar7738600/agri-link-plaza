@@ -1,11 +1,30 @@
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
 
-// TODO: Replace with your actual Firebase configuration
-// Get your config from: https://console.firebase.google.com/
-// 1. Go to Project Settings > General
-// 2. Scroll to "Your apps" section
-// 3. Click on web app (</>) to get your config
+// FIREBASE CONFIGURATION INSTRUCTIONS:
+// 
+// 1. Go to Firebase Console: https://console.firebase.google.com/
+// 2. Select your project (kisanseva-plus)
+// 3. ENABLE FIREBASE STORAGE:
+//    - Click "Build" > "Storage" in left sidebar
+//    - Click "Get Started" and follow the setup wizard
+//    - Choose a location (preferably near your users)
+// 
+// 4. CONFIGURE STORAGE RULES:
+//    - In Storage, go to "Rules" tab
+//    - Replace default rules with:
+//    
+//    rules_version = '2';
+//    service firebase.storage {
+//      match /b/{bucket}/o {
+//        match /kyc-documents/{userId}/{allPaths=**} {
+//          allow read, write: if true; // For testing - make more restrictive in production
+//        }
+//      }
+//    }
+//    - Click "Publish"
+//
+// 5. Get your Firebase config from Project Settings > General > Your apps
 const firebaseConfig = {
   apiKey: "AIzaSyC4wRVdPeQnVWcZjXiHh9MG_4X7kYVjKLo",
   authDomain: "kisanseva-plus.firebaseapp.com",

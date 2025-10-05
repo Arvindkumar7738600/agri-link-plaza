@@ -182,16 +182,29 @@ const Signup = () => {
       const storageRef = ref(storage, `kyc-documents/${formData.phoneNumber}/${timestamp}_${file.name}`);
       
       console.log("Uploading file to Firebase Storage:", file.name);
-      await uploadBytes(storageRef, file);
+      
+      // Add timeout to prevent hanging
+      const uploadPromise = uploadBytes(storageRef, file);
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Upload timeout - Please check Firebase Storage configuration')), 30000)
+      );
+      
+      await Promise.race([uploadPromise, timeoutPromise]);
       
       console.log("Getting download URL...");
       const downloadURL = await getDownloadURL(storageRef);
       
       console.log("Upload successful! URL:", downloadURL);
       return downloadURL;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Firebase upload error:", error);
-      throw new Error(`Failed to upload document: ${error.message || 'Unknown error'}`);
+      
+      // Check if it's a Firebase configuration issue
+      if (error.code === 'storage/retry-limit-exceeded' || error.message?.includes('timeout')) {
+        throw new Error('Firebase Storage not properly configured. Please check: 1) Storage is enabled in Firebase Console 2) Storage rules allow uploads 3) Correct storage bucket URL');
+      }
+      
+      throw new Error(`Document upload failed: ${error.message || 'Unknown error'}`);
     }
   };
 
@@ -226,11 +239,6 @@ const Signup = () => {
     console.log("Starting registration process...");
     
     try {
-      toast({
-        title: "Uploading Documents",
-        description: "Please wait while we upload your documents...",
-      });
-
       // Upload document to Firebase Storage
       console.log("Attempting to upload to Firebase...");
       const documentUrl = await uploadDocumentToFirebase(formData.aadhaarFile);
