@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
-import { Phone, User, Mail, MapPin, Upload, ArrowRight, CheckCircle, Loader2, AlertCircle } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Phone, User, Mail, MapPin, Upload, ArrowRight, CheckCircle, Loader2, AlertCircle, Camera, FileUp, Navigation } from "lucide-react";
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '@/lib/firebase';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +18,10 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [uploadMethod, setUploadMethod] = useState<'camera' | 'file' | null>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Form data
   const [formData, setFormData] = useState({
@@ -26,7 +32,8 @@ const Signup = () => {
     address: '',
     otp: '',
     aadhaarFile: null as File | null,
-    termsAccepted: false
+    termsAccepted: false,
+    documentUrls: [] as string[]
   });
   
   const [errors, setErrors] = useState<{[key: string]: string}>({});
@@ -52,6 +59,64 @@ const Signup = () => {
     }
     return () => clearInterval(interval);
   }, [resendTimer]);
+
+  const getAddressFromGPS = async () => {
+    setIsGettingLocation(true);
+    try {
+      if (!navigator.geolocation) {
+        toast({
+          title: "Location Not Supported",
+          description: "Your browser doesn't support geolocation",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+            );
+            const data = await response.json();
+            
+            if (data.display_name) {
+              updateFormData('address', data.display_name);
+              toast({
+                title: "Location Found",
+                description: "Address filled automatically",
+              });
+            }
+          } catch (error) {
+            toast({
+              title: "Failed to Get Address",
+              description: "Could not fetch address from location",
+              variant: "destructive",
+            });
+          } finally {
+            setIsGettingLocation(false);
+          }
+        },
+        (error) => {
+          toast({
+            title: "Location Error",
+            description: error.message,
+            variant: "destructive",
+          });
+          setIsGettingLocation(false);
+        }
+      );
+    } catch (error) {
+      toast({
+        title: "Location Error",
+        description: "Failed to get your location",
+        variant: "destructive",
+      });
+      setIsGettingLocation(false);
+    }
+  };
 
   const validateStep1 = () => {
     const newErrors: {[key: string]: string} = {};
@@ -111,6 +176,33 @@ const Signup = () => {
     }
   };
 
+  const uploadDocumentToFirebase = async (file: File): Promise<string> => {
+    const timestamp = Date.now();
+    const storageRef = ref(storage, `kyc-documents/${formData.phoneNumber}/${timestamp}_${file.name}`);
+    
+    await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(storageRef);
+    
+    return downloadURL;
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File Too Large",
+        description: "Please upload a file smaller than 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    updateFormData('aadhaarFile', file);
+    setUploadMethod(null);
+  };
+
   const handleCompleteRegistration = async () => {
     if (!formData.aadhaarFile) {
       setErrors({ aadhaar: 'Please upload Aadhaar card' });
@@ -123,10 +215,13 @@ const Signup = () => {
 
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simulate document URL (in production, upload to your backend)
-      const documentUrl = `documents/${Date.now()}_${formData.aadhaarFile.name}`;
+      toast({
+        title: "Uploading Documents",
+        description: "Please wait while we upload your documents...",
+      });
+
+      // Upload document to Firebase Storage
+      const documentUrl = await uploadDocumentToFirebase(formData.aadhaarFile);
       
       // Register user with all details including document
       login(formData.phoneNumber, {
@@ -145,9 +240,10 @@ const Signup = () => {
       
       navigate('/dashboard');
     } catch (error) {
+      console.error('Registration error:', error);
       toast({
         title: "Registration Failed",
-        description: "Please try again later",
+        description: "Failed to upload documents. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -284,13 +380,35 @@ const Signup = () => {
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-white/80 mb-2 block">
-                      Address
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-sm font-medium text-white/80">
+                        Address
+                      </label>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={getAddressFromGPS}
+                        disabled={isGettingLocation}
+                        className="text-white/80 hover:text-white hover:bg-white/10 h-8"
+                      >
+                        {isGettingLocation ? (
+                          <>
+                            <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                            Getting Location...
+                          </>
+                        ) : (
+                          <>
+                            <Navigation className="h-3 w-3 mr-1" />
+                            Use GPS
+                          </>
+                        )}
+                      </Button>
+                    </div>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-3 h-4 w-4 text-white/60" />
                       <Textarea 
-                        placeholder="Your complete address" 
+                        placeholder="Your complete address or use GPS" 
                         className="pl-10 bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-white/50 focus:border-white/40 resize-none"
                         rows={3}
                         value={formData.address}
@@ -433,41 +551,87 @@ const Signup = () => {
                   </div>
                   
                   <div className="space-y-4">
-                    <div className="border-2 border-dashed border-white/20 rounded-lg p-6 text-center bg-white/5 backdrop-blur-sm">
-                      <Upload className="h-8 w-8 text-white/60 mx-auto mb-2" />
-                      <p className="text-sm font-medium mb-1 text-white">Aadhaar Card</p>
-                      <p className="text-xs text-white/60 mb-3">Upload front and back (Max 5MB each)</p>
-                      <input
-                        type="file"
-                        id="aadhaar"
-                        accept="image/*,.pdf"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) updateFormData('aadhaarFile', file);
-                        }}
-                        className="hidden"
-                        multiple
-                      />
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                        onClick={() => document.getElementById('aadhaar')?.click()}
-                      >
-                        Choose Files
-                      </Button>
-                      {formData.aadhaarFile && (
-                        <p className="text-xs text-success mt-2">
-                          ✓ {formData.aadhaarFile.name}
-                        </p>
-                      )}
-                      {errors.aadhaar && (
-                        <div className="flex items-center justify-center mt-2 text-sm text-red-300">
-                          <AlertCircle className="h-4 w-4 mr-1" />
-                          {errors.aadhaar}
+                    {!formData.aadhaarFile ? (
+                      <>
+                        <div className="border-2 border-dashed border-white/20 rounded-lg p-6 bg-white/5 backdrop-blur-sm">
+                          <Upload className="h-8 w-8 text-white/60 mx-auto mb-3" />
+                          <p className="text-sm font-medium mb-1 text-white">Upload Aadhaar Card</p>
+                          <p className="text-xs text-white/60 mb-4">Choose how you want to upload (Max 5MB)</p>
+                          
+                          <div className="grid grid-cols-2 gap-3">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="bg-white/10 border-white/20 text-white hover:bg-white/20 flex-col h-auto py-4"
+                              onClick={() => {
+                                setUploadMethod('camera');
+                                cameraInputRef.current?.click();
+                              }}
+                            >
+                              <Camera className="h-6 w-6 mb-2" />
+                              <span className="text-xs">Take Photo</span>
+                            </Button>
+                            
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="bg-white/10 border-white/20 text-white hover:bg-white/20 flex-col h-auto py-4"
+                              onClick={() => {
+                                setUploadMethod('file');
+                                fileInputRef.current?.click();
+                              }}
+                            >
+                              <FileUp className="h-6 w-6 mb-2" />
+                              <span className="text-xs">Choose File</span>
+                            </Button>
+                          </div>
+
+                          <input
+                            ref={cameraInputRef}
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            onChange={handleFileSelect}
+                            className="hidden"
+                          />
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*,.pdf"
+                            onChange={handleFileSelect}
+                            className="hidden"
+                          />
                         </div>
-                      )}
-                    </div>
+                      </>
+                    ) : (
+                      <div className="border-2 border-white/20 rounded-lg p-6 bg-white/5 backdrop-blur-sm">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <CheckCircle className="h-6 w-6 text-success" />
+                            <div>
+                              <p className="text-sm font-medium text-white">Document Uploaded</p>
+                              <p className="text-xs text-white/60">{formData.aadhaarFile.name}</p>
+                            </div>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => updateFormData('aadhaarFile', null)}
+                            className="text-white/60 hover:text-white hover:bg-white/10"
+                          >
+                            Change
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {errors.aadhaar && (
+                      <div className="flex items-center justify-center text-sm text-red-300">
+                        <AlertCircle className="h-4 w-4 mr-1" />
+                        {errors.aadhaar}
+                      </div>
+                    )}
                   </div>
                   
                   <div className="flex items-start space-x-3">
