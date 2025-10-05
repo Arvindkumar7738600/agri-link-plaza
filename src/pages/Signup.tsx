@@ -177,13 +177,22 @@ const Signup = () => {
   };
 
   const uploadDocumentToFirebase = async (file: File): Promise<string> => {
-    const timestamp = Date.now();
-    const storageRef = ref(storage, `kyc-documents/${formData.phoneNumber}/${timestamp}_${file.name}`);
-    
-    await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(storageRef);
-    
-    return downloadURL;
+    try {
+      const timestamp = Date.now();
+      const storageRef = ref(storage, `kyc-documents/${formData.phoneNumber}/${timestamp}_${file.name}`);
+      
+      console.log("Uploading file to Firebase Storage:", file.name);
+      await uploadBytes(storageRef, file);
+      
+      console.log("Getting download URL...");
+      const downloadURL = await getDownloadURL(storageRef);
+      
+      console.log("Upload successful! URL:", downloadURL);
+      return downloadURL;
+    } catch (error) {
+      console.error("Firebase upload error:", error);
+      throw new Error(`Failed to upload document: ${error.message || 'Unknown error'}`);
+    }
   };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -214,6 +223,8 @@ const Signup = () => {
     }
 
     setIsLoading(true);
+    console.log("Starting registration process...");
+    
     try {
       toast({
         title: "Uploading Documents",
@@ -221,7 +232,9 @@ const Signup = () => {
       });
 
       // Upload document to Firebase Storage
+      console.log("Attempting to upload to Firebase...");
       const documentUrl = await uploadDocumentToFirebase(formData.aadhaarFile);
+      console.log("Document uploaded successfully:", documentUrl);
       
       // Register user with all details including document
       login(formData.phoneNumber, {
@@ -238,16 +251,21 @@ const Signup = () => {
         description: "Welcome to KisanSeva Plus! KYC verification pending.",
       });
       
+      console.log("Registration complete, navigating to dashboard...");
       navigate('/dashboard');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration error:', error);
+      
+      const errorMessage = error.message || "Failed to upload documents. Please try again.";
+      
       toast({
         title: "Registration Failed",
-        description: "Failed to upload documents. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
       setIsLoading(false);
+      console.log("Loading state cleared");
     }
   };
 
