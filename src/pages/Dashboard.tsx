@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { EditProfileDialog } from '@/components/EditProfileDialog';
 import { 
   User, 
   Phone, 
@@ -21,8 +22,9 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   if (!user) {
     navigate('/login');
@@ -32,6 +34,12 @@ const Dashboard = () => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleProfileUpdate = (updatedData: any) => {
+    if (updateUser) {
+      updateUser(updatedData);
+    }
   };
 
   const getStatusIcon = (status: string) => {
@@ -87,7 +95,12 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-white">Profile Information</CardTitle>
-                  <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-white/80 hover:text-white hover:bg-white/10"
+                    onClick={() => setIsEditDialogOpen(true)}
+                  >
                     <Edit className="h-4 w-4 mr-2" />
                     Edit
                   </Button>
@@ -245,6 +258,14 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Edit Profile Dialog */}
+      <EditProfileDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        user={user}
+        onUpdate={handleProfileUpdate}
+      />
     </div>
   );
 };
