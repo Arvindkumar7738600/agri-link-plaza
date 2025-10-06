@@ -18,7 +18,14 @@ export const uploadDocumentToCloudinary = async (file: File, userId: string): Pr
     });
 
     if (!response.ok) {
-      throw new Error(`Upload failed: ${response.statusText}`);
+      const errorData = await response.json();
+      console.error("Cloudinary error response:", errorData);
+      
+      if (errorData.error?.message?.includes('Upload preset must be whitelisted')) {
+        throw new Error('Cloudinary configuration error: Please enable unsigned uploads for preset "kisansevaplus" in your Cloudinary dashboard (Settings → Upload → Upload presets → Enable Unsigned)');
+      }
+      
+      throw new Error(`Upload failed: ${errorData.error?.message || response.statusText}`);
     }
 
     const data = await response.json();
