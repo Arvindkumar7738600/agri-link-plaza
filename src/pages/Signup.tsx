@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Phone, User, Mail, MapPin, Upload, ArrowRight, CheckCircle, Loader2, AlertCircle, Camera, FileUp, Navigation } from "lucide-react";
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '@/lib/firebase';
+import { uploadDocumentToCloudinary } from "@/lib/cloudinary";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -176,37 +175,6 @@ const Signup = () => {
     }
   };
 
-  const uploadDocumentToFirebase = async (file: File): Promise<string> => {
-    try {
-      const timestamp = Date.now();
-      const storageRef = ref(storage, `kyc-documents/${formData.phoneNumber}/${timestamp}_${file.name}`);
-      
-      console.log("Uploading file to Firebase Storage:", file.name);
-      
-      // Add timeout to prevent hanging
-      const uploadPromise = uploadBytes(storageRef, file);
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Upload timeout - Please check Firebase Storage configuration')), 30000)
-      );
-      
-      await Promise.race([uploadPromise, timeoutPromise]);
-      
-      console.log("Getting download URL...");
-      const downloadURL = await getDownloadURL(storageRef);
-      
-      console.log("Upload successful! URL:", downloadURL);
-      return downloadURL;
-    } catch (error: any) {
-      console.error("Firebase upload error:", error);
-      
-      // Check if it's a Firebase configuration issue
-      if (error.code === 'storage/retry-limit-exceeded' || error.message?.includes('timeout')) {
-        throw new Error('Firebase Storage not properly configured. Please check: 1) Storage is enabled in Firebase Console 2) Storage rules allow uploads 3) Correct storage bucket URL');
-      }
-      
-      throw new Error(`Document upload failed: ${error.message || 'Unknown error'}`);
-    }
-  };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -239,9 +207,9 @@ const Signup = () => {
     console.log("Starting registration process...");
     
     try {
-      // Upload document to Firebase Storage
-      console.log("Attempting to upload to Firebase...");
-      const documentUrl = await uploadDocumentToFirebase(formData.aadhaarFile);
+      // Upload document to Cloudinary
+      console.log("Attempting to upload to Cloudinary...");
+      const documentUrl = await uploadDocumentToCloudinary(formData.aadhaarFile, formData.phoneNumber);
       console.log("Document uploaded successfully:", documentUrl);
       
       // Register user with all details including document
