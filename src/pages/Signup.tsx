@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Phone, User, Mail, MapPin, Upload, ArrowRight, CheckCircle, Loader2, AlertCircle, Camera, FileUp, Navigation } from "lucide-react";
 import { uploadDocumentToCloudinary } from "@/lib/cloudinary";
+import { saveUserToFirestore } from "@/lib/firestore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -212,6 +213,22 @@ const Signup = () => {
       const documentUrl = await uploadDocumentToCloudinary(formData.aadhaarFile, formData.phoneNumber);
       console.log("Document uploaded successfully:", documentUrl);
       
+      // Generate unique user ID using phone number
+      const userId = `user_${formData.phoneNumber}`;
+      
+      // Save user data to Firestore
+      console.log("Saving user data to Firestore...");
+      await saveUserToFirestore(userId, {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        address: formData.address,
+        isKycVerified: false,
+        documentUrl: documentUrl
+      });
+      console.log("User data saved to Firestore successfully");
+      
       // Register user with all details including document
       login(formData.phoneNumber, {
         firstName: formData.firstName,
@@ -232,7 +249,7 @@ const Signup = () => {
     } catch (error: any) {
       console.error('Registration error:', error);
       
-      const errorMessage = error.message || "Failed to upload documents. Please try again.";
+      const errorMessage = error.message || "Failed to complete registration. Please try again.";
       
       toast({
         title: "Registration Failed",
