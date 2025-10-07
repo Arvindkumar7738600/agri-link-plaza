@@ -4,11 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ScheduleModal from "@/components/ScheduleModal";
 import { saveEnquiryToFirestore } from "@/lib/firestore";
 import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
+  const navigate = useNavigate();
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -462,7 +464,7 @@ const Contact = () => {
             <p className="text-muted-foreground mb-4">
               Can't find what you're looking for?
             </p>
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" onClick={() => navigate("/faqs")}>
               View All FAQs
             </Button>
           </div>
