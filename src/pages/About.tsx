@@ -1,4 +1,4 @@
-import { Target, Eye, Award, Users } from "lucide-react";
+import { Target, Eye, Award, Users, Linkedin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -35,19 +35,15 @@ const About = () => {
       name: "Arvind Kumar",
       role: "Founder",
       experience: "1st-year Data Science, IIT Madras",
-      description: "From Ranchi, Jharkhand. Passionate about combining technology with agriculture to solve farmers' real-life problems. Hafto ka kaam, ganto mein!"
+      description: "From Ranchi, Jharkhand. Passionate about combining technology with agriculture to solve farmers' real-life problems. Hafto ka kaam, ganto mein!",
+      linkedin: "https://www.linkedin.com/in/arvind-kumar-060656316/"
     },
     {
       name: "Aman Raj",
       role: "Co-Founder",
       experience: "1st-year Data Science, IIT Madras",
-      description: "From Ranchi, Jharkhand. Young visionary working to transform Indian agriculture through technology and make farming easier and more profitable."
-    },
-    {
-      name: "Priyanshu Kumar",
-      role: "Team Member",
-      experience: "Student at IIT Patna",
-      description: "Dedicated team member contributing to our mission of modernizing agriculture and empowering rural communities with technology."
+      description: "From Ranchi, Jharkhand. Young visionary working to transform Indian agriculture through technology and make farming easier and more profitable.",
+      linkedin: "https://www.linkedin.com/in/aman-raj-158126342/"
     }
   ];
 
@@ -165,7 +161,7 @@ const About = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {team.map((member, index) => (
               <Card key={index} className="text-center hover:shadow-elevated transition-shadow bg-card">
                 <CardHeader>
@@ -179,9 +175,18 @@ const About = () => {
                   <div className="text-sm text-muted-foreground">{member.experience}</div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed mb-4">
                     {member.description}
                   </p>
+                  <a 
+                    href={member.linkedin} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <Linkedin className="w-5 h-5" />
+                    <span className="text-sm font-medium">Connect on LinkedIn</span>
+                  </a>
                 </CardContent>
               </Card>
             ))}
