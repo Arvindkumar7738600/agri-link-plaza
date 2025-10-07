@@ -61,3 +61,31 @@ export const updateUserInFirestore = async (
     throw new Error(error?.message || 'Failed to update user data in Firestore');
   }
 };
+
+export interface EnquiryData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  subject: string;
+  message: string;
+  submittedAt: Timestamp;
+}
+
+export const saveEnquiryToFirestore = async (
+  enquiryData: Omit<EnquiryData, 'submittedAt'>
+): Promise<void> => {
+  try {
+    const enquiriesRef = doc(db, 'enquiries', `${Date.now()}_${enquiryData.email}`);
+    
+    await setDoc(enquiriesRef, {
+      ...enquiryData,
+      submittedAt: Timestamp.now(),
+    });
+    
+    console.log('Enquiry saved to Firestore successfully');
+  } catch (error: any) {
+    console.error('Error saving enquiry to Firestore:', error);
+    throw new Error(error?.message || 'Failed to save enquiry to Firestore');
+  }
+};

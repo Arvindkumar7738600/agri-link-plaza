@@ -5,9 +5,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import ScheduleModal from "@/components/ScheduleModal";
+import { saveEnquiryToFirestore } from "@/lib/firestore";
+import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+  
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    subject: "",
+    message: ""
+  });
 
   const handleAction = (actionType: string) => {
     switch (actionType) {
@@ -25,6 +38,52 @@ const Contact = () => {
         break;
       default:
         break;
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.phoneNumber || !formData.subject || !formData.message) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await saveEnquiryToFirestore(formData);
+      
+      toast({
+        title: "Success!",
+        description: "Your message has been sent successfully. We'll get back to you soon.",
+      });
+
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        subject: "",
+        message: ""
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send message. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   const contactInfo = [
@@ -194,57 +253,101 @@ const Contact = () => {
                     Fill out the form below and we'll get back to you within 24 hours.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">
+                          First Name
+                        </label>
+                        <Input 
+                          name="firstName"
+                          value={formData.firstName}
+                          onChange={handleInputChange}
+                          placeholder="Enter your first name"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">
+                          Last Name
+                        </label>
+                        <Input 
+                          name="lastName"
+                          value={formData.lastName}
+                          onChange={handleInputChange}
+                          placeholder="Enter your last name"
+                          required
+                        />
+                      </div>
+                    </div>
+                    
                     <div>
                       <label className="text-sm font-medium text-foreground mb-2 block">
-                        First Name
+                        Email Address
                       </label>
-                      <Input placeholder="Enter your first name" />
+                      <Input 
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="Enter your email"
+                        required
+                      />
                     </div>
+                    
                     <div>
                       <label className="text-sm font-medium text-foreground mb-2 block">
-                        Last Name
+                        Phone Number
                       </label>
-                      <Input placeholder="Enter your last name" />
+                      <Input 
+                        type="tel"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                        placeholder="Enter your phone number"
+                        required
+                      />
                     </div>
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Email Address
-                    </label>
-                    <Input type="email" placeholder="Enter your email" />
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Phone Number
-                    </label>
-                    <Input type="tel" placeholder="Enter your phone number" />
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Subject
-                    </label>
-                    <Input placeholder="What is this regarding?" />
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Message
-                    </label>
-                    <Textarea 
-                      placeholder="Tell us how we can help you..."
-                      rows={4}
-                    />
-                  </div>
-                  
-                  <Button className="w-full" size="lg" style={{background: 'var(--gradient-primary)'}}>
-                    <Send className="h-4 w-4 mr-2" />
-                    Send Message
-                  </Button>
+                    
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">
+                        Subject
+                      </label>
+                      <Input 
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleInputChange}
+                        placeholder="What is this regarding?"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">
+                        Message
+                      </label>
+                      <Textarea 
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        placeholder="Tell us how we can help you..."
+                        rows={4}
+                        required
+                      />
+                    </div>
+                    
+                    <Button 
+                      type="submit"
+                      className="w-full" 
+                      size="lg" 
+                      style={{background: 'var(--gradient-primary)'}}
+                      disabled={isSubmitting}
+                    >
+                      <Send className="h-4 w-4 mr-2" />
+                      {isSubmitting ? "Sending..." : "Send Message"}
+                    </Button>
+                  </form>
                 </CardContent>
               </Card>
             </div>
