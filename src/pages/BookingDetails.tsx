@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
+import { saveBookingToFirestore } from "@/lib/firestore";
+import { toast } from "@/hooks/use-toast";
 
 const BookingDetails = () => {
   const location = useLocation();
@@ -14,6 +16,7 @@ const BookingDetails = () => {
   const { isAuthenticated, user } = useAuth();
   const equipment = location.state?.equipment;
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     fullName: user?.firstName + " " + user?.lastName || "",
     phoneNumber: user?.phoneNumber || "",
@@ -62,19 +65,57 @@ const BookingDetails = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     // Validate all fields are filled
     const requiredFields = ['fullName', 'phoneNumber', 'date', 'time', 'address'];
     const emptyFields = requiredFields.filter(field => !formData[field]);
     
     if (emptyFields.length > 0) {
-      alert("Please fill in all required fields.");
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
       return;
     }
 
-    // In a real app, you would send this data to your backend
-    alert(`Booking confirmed for ${equipment.name}!\n\nDetails:\nName: ${formData.fullName}\nPhone: ${formData.phoneNumber}\nDate: ${formData.date}\nTime: ${formData.time}\nAddress: ${formData.address}`);
-    navigate("/dashboard");
+    setIsSubmitting(true);
+
+    try {
+      // Save to Firestore
+      await saveBookingToFirestore({
+        equipmentName: equipment.name,
+        equipmentLocation: equipment.location,
+        equipmentPower: equipment.power,
+        owner: equipment.owner,
+        clientName: formData.fullName,
+        clientPhone: formData.phoneNumber,
+        clientAddress: formData.address,
+        date: formData.date,
+        time: formData.time,
+        hourlyRate: equipment.price,
+        dailyRate: equipment.dailyPrice
+      });
+
+      toast({
+        title: "Booking Successful!",
+        description: `Your booking for ${equipment.name} has been confirmed.`,
+      });
+
+      // Navigate to dashboard after a short delay
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
+    } catch (error: any) {
+      console.error("Error saving booking data:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to complete booking. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -256,14 +297,16 @@ const BookingDetails = () => {
                   onClick={handleCancel}
                   variant="outline"
                   className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+                  disabled={isSubmitting}
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleConfirm}
                   className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                  disabled={isSubmitting}
                 >
-                  Confirm Booking
+                  {isSubmitting ? "Processing..." : "Confirm Booking"}
                 </Button>
               </div>
             </CardContent>

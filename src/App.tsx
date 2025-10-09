@@ -14,6 +14,7 @@ import Services from "./pages/Services";
 import Booking from "./pages/Booking";
 import BookingDetails from "./pages/BookingDetails";
 import Farmers from "./pages/Farmers";
+import HireFarmerDetails from "./pages/HireFarmerDetails";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -46,6 +47,7 @@ const App = () => (
                 <Route path="/booking" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
                 <Route path="/booking-details" element={<ProtectedRoute><BookingDetails /></ProtectedRoute>} />
                 <Route path="/farmers" element={<ProtectedRoute><Farmers /></ProtectedRoute>} />
+                <Route path="/hire-farmer-details" element={<ProtectedRoute><HireFarmerDetails /></ProtectedRoute>} />
                 <Route path="/fpo" element={<ProtectedRoute><FPO /></ProtectedRoute>} />
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />

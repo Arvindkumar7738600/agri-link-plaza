@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, Filter, MapPin, Star, Clock, Phone, User, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useTranslations } from "@/hooks/useTranslations";
 
 const Farmers = () => {
+  const navigate = useNavigate();
   const [searchLocation, setSearchLocation] = useState("");
   const [selectedSkill, setSelectedSkill] = useState("all");
   const { t } = useTranslations();
@@ -289,7 +291,7 @@ const Farmers = () => {
                       style={farmer.available ? {background: 'var(--gradient-primary)'} : {}}
                       onClick={() => {
                         if (farmer.available) {
-                          alert(`Hiring ${farmer.name} for ${farmer.hourlyRate}. Contact: +91 9608792602`);
+                          navigate('/hire-farmer-details', { state: { farmer } });
                         }
                       }}
                     >

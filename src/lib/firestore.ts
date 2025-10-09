@@ -89,3 +89,70 @@ export const saveEnquiryToFirestore = async (
     throw new Error(error?.message || 'Failed to save enquiry to Firestore');
   }
 };
+
+export interface HireData {
+  farmerName: string;
+  farmerLocation: string;
+  farmerSkills: string[];
+  farmerRating: number;
+  clientName: string;
+  clientPhone: string;
+  clientAddress: string;
+  date: string;
+  time: string;
+  duration: string;
+  rate: string;
+  specialRequirements: string;
+  hiredAt: Timestamp;
+}
+
+export const saveHireToFirestore = async (
+  hireData: Omit<HireData, 'hiredAt'>
+): Promise<void> => {
+  try {
+    const hiresRef = doc(db, 'hires', `${Date.now()}_${hireData.clientPhone}`);
+    
+    await setDoc(hiresRef, {
+      ...hireData,
+      hiredAt: Timestamp.now(),
+    });
+    
+    console.log('Hire data saved to Firestore successfully');
+  } catch (error: any) {
+    console.error('Error saving hire to Firestore:', error);
+    throw new Error(error?.message || 'Failed to save hire data to Firestore');
+  }
+};
+
+export interface BookingData {
+  equipmentName: string;
+  equipmentLocation: string;
+  equipmentPower: string;
+  owner: string;
+  clientName: string;
+  clientPhone: string;
+  clientAddress: string;
+  date: string;
+  time: string;
+  hourlyRate: string;
+  dailyRate: string;
+  bookedAt: Timestamp;
+}
+
+export const saveBookingToFirestore = async (
+  bookingData: Omit<BookingData, 'bookedAt'>
+): Promise<void> => {
+  try {
+    const bookingsRef = doc(db, 'bookings', `${Date.now()}_${bookingData.clientPhone}`);
+    
+    await setDoc(bookingsRef, {
+      ...bookingData,
+      bookedAt: Timestamp.now(),
+    });
+    
+    console.log('Booking data saved to Firestore successfully');
+  } catch (error: any) {
+    console.error('Error saving booking to Firestore:', error);
+    throw new Error(error?.message || 'Failed to save booking data to Firestore');
+  }
+};
