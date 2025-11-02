@@ -1,6 +1,14 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 
-interface User {
+interface BookingRecord {
+  date: string;
+  service: string;
+  status: string;
+}
+
+interface AuthUser {
   id: string;
   firstName: string;
   lastName: string;
@@ -8,108 +16,173 @@ interface User {
   phoneNumber: string;
   address: string;
   isKycVerified: boolean;
-  profileImage?: string;
-  documentUrl?: string;
-  loginTime?: string;
-  createdAt?: string;
-  bookingHistory: BookingRecord[];
-}
-
-interface BookingRecord {
-  id: string;
-  serviceName: string;
-  date: string;
-  status: 'completed' | 'ongoing' | 'cancelled';
-  amount: number;
+  documentUrl: string;
+  bookings: BookingRecord[];
 }
 
 interface AuthContextType {
-  user: User | null;
+  user: AuthUser | null;
+  session: Session | null;
   isAuthenticated: boolean;
-  login: (phoneNumber: string, userData: Partial<User>) => void;
-  logout: () => void;
-  updateUser: (userData: Partial<User>) => void;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<{ error: any }>;
+  signup: (email: string, password: string, userData: { firstName: string; lastName: string; phoneNumber: string; address: string }) => Promise<{ error: any }>;
+  logout: () => Promise<void>;
+  updateUser: (userData: Partial<AuthUser>) => Promise<void>;
 }
 
-const defaultAuthContext: AuthContextType = {
-  user: null,
-  isAuthenticated: false,
-  login: () => {},
-  logout: () => {},
-  updateUser: () => {},
-};
-
-const AuthContext = createContext<AuthContextType>(defaultAuthContext);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Check localStorage for existing user
+  // Fetch user profile from Supabase
+  const fetchUserProfile = async (userId: string) => {
     try {
-      const storedUser = localStorage.getItem('kisanseva_user');
-      if (storedUser) {
-        const userData = JSON.parse(storedUser);
-        setUser(userData);
-        setIsAuthenticated(true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setUser({
+          id: data.id,
+          firstName: data.first_name,
+          lastName: data.last_name,
+          email: data.email,
+          phoneNumber: data.phone_number,
+          address: data.address || '',
+          isKycVerified: data.is_kyc_verified || false,
+          documentUrl: data.document_url || '',
+          bookings: []
+        });
       }
     } catch (error) {
-      console.error('Error loading user from localStorage:', error);
-    } finally {
-      setIsInitialized(true);
+      console.error('Error fetching user profile:', error);
     }
+  };
+
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      
+      if (session?.user) {
+        // Defer profile fetch to avoid blocking
+        setTimeout(() => {
+          fetchUserProfile(session.user.id);
+        }, 0);
+      } else {
+        setUser(null);
+      }
+      
+      setLoading(false);
+    });
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = (phoneNumber: string, userData: Partial<User> = {}) => {
-    const now = new Date().toISOString();
-    const newUser: User = {
-      id: Date.now().toString(),
-      firstName: userData.firstName || '',
-      lastName: userData.lastName || '',
-      email: userData.email || '',
-      phoneNumber,
-      address: userData.address || '',
-      isKycVerified: userData.isKycVerified || false,
-      profileImage: userData.profileImage,
-      documentUrl: userData.documentUrl,
-      loginTime: now,
-      createdAt: userData.createdAt || now,
-      bookingHistory: userData.bookingHistory || []
-    };
-    
-    setUser(newUser);
-    setIsAuthenticated(true);
-    localStorage.setItem('kisanseva_user', JSON.stringify(newUser));
+  const signup = async (
+    email: string, 
+    password: string, 
+    userData: { firstName: string; lastName: string; phoneNumber: string; address: string }
+  ) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            first_name: userData.firstName,
+            last_name: userData.lastName,
+            phone_number: userData.phoneNumber,
+            address: userData.address
+          },
+          emailRedirectTo: `${window.location.origin}/`
+        }
+      });
+
+      return { error };
+    } catch (error: any) {
+      return { error };
+    }
   };
 
-  const logout = () => {
+  const login = async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      return { error };
+    } catch (error: any) {
+      return { error };
+    }
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem('kisanseva_user');
+    setSession(null);
   };
 
-  const updateUser = (userData: Partial<User>) => {
-    if (user) {
-      const updatedUser = { ...user, ...userData };
-      setUser(updatedUser);
-      localStorage.setItem('kisanseva_user', JSON.stringify(updatedUser));
+  const updateUser = async (userData: Partial<AuthUser>) => {
+    if (!user) return;
+
+    try {
+      const updateData: any = {};
+      if (userData.firstName) updateData.first_name = userData.firstName;
+      if (userData.lastName) updateData.last_name = userData.lastName;
+      if (userData.email) updateData.email = userData.email;
+      if (userData.address) updateData.address = userData.address;
+
+      const { error } = await supabase
+        .from('profiles')
+        .update(updateData)
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      setUser({ ...user, ...userData });
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      throw error;
     }
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      isAuthenticated,
-      login,
-      logout,
-      updateUser
+    <AuthContext.Provider value={{ 
+      user, 
+      session,
+      isAuthenticated: !!session, 
+      loading,
+      login, 
+      signup,
+      logout, 
+      updateUser 
     }}>
       {children}
     </AuthContext.Provider>

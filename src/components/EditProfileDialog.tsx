@@ -5,8 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2 } from 'lucide-react';
-import { updateUserInFirestore } from '@/lib/firestore';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface EditProfileDialogProps {
   open: boolean;
@@ -36,14 +36,21 @@ export const EditProfileDialog = ({ open, onOpenChange, user, onUpdate }: EditPr
     setIsLoading(true);
 
     try {
-      const userId = `user_${user.phoneNumber}`;
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
       
-      await updateUserInFirestore(userId, {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        address: formData.address,
-      });
+      if (!currentUser) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          address: formData.address,
+        })
+        .eq('id', currentUser.id);
+
+      if (error) throw error;
 
       onUpdate(formData);
       

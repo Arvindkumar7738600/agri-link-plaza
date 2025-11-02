@@ -122,8 +122,8 @@ const Header = () => {
                 asChild 
                 className="relative overflow-hidden group bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
               >
-                <Link to="/login" className="relative z-10">
-                  <span>{t('login')}</span>
+                <Link to="/signup" className="relative z-10">
+                  <span>Sign Up</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Link>
               </Button>
@@ -203,7 +203,7 @@ const Header = () => {
                     size="sm" 
                     asChild
                   >
-                    <Link to="/login">{t('login')}</Link>
+                    <Link to="/signup">Sign Up</Link>
                   </Button>
                 )}
                 <DropdownMenu>

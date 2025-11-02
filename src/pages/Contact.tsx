@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ScheduleModal from "@/components/ScheduleModal";
-import { saveEnquiryToFirestore } from "@/lib/firestore";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const navigate = useNavigate();
@@ -63,7 +63,18 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      await saveEnquiryToFirestore(formData);
+      const { error } = await supabase
+        .from('enquiries')
+        .insert({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone_number: formData.phoneNumber,
+          subject: formData.subject,
+          message: formData.message
+        });
+
+      if (error) throw error;
       
       toast({
         title: "Success!",
