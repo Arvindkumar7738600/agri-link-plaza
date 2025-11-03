@@ -7,6 +7,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -61,8 +62,12 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Simulate OTP send
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const { error } = await supabase.auth.signInWithOtp({
+        phone: `+91${phoneNumber}`,
+      });
+
+      if (error) throw error;
+
       setIsOtpSent(true);
       setResendTimer(30);
       
@@ -70,10 +75,10 @@ const Login = () => {
         title: "OTP Sent Successfully",
         description: `Verification code sent to +91 ${phoneNumber}`,
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Failed to Send OTP",
-        description: "Please try again later",
+        description: error.message || "Please try again later",
         variant: "destructive",
       });
     } finally {
@@ -92,13 +97,13 @@ const Login = () => {
     setIsVerifying(true);
     
     try {
-      // Use actual Supabase authentication
-      // For now, this is a placeholder - proper phone auth needs to be implemented
-      const { error } = await login(`${phoneNumber}@temp.com`, otp);
+      const { error } = await supabase.auth.verifyOtp({
+        phone: `+91${phoneNumber}`,
+        token: otp,
+        type: 'sms'
+      });
       
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
       
       toast({
         title: "Login Successful",
@@ -106,11 +111,11 @@ const Login = () => {
       });
       
       navigate('/dashboard');
-    } catch (error) {
+    } catch (error: any) {
       setOtpError("Invalid OTP. Please try again.");
       toast({
         title: "Invalid OTP",
-        description: "Please check and enter the correct OTP",
+        description: error.message || "Please check and enter the correct OTP",
         variant: "destructive",
       });
     } finally {
@@ -125,18 +130,21 @@ const Login = () => {
     setOtpError("");
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { error } = await supabase.auth.signInWithOtp({
+        phone: `+91${phoneNumber}`,
+      });
+
+      if (error) throw error;
       
       setResendTimer(30);
       toast({
         title: "OTP Resent",
         description: "New verification code sent to your phone",
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Failed to Resend OTP",
-        description: "Please try again",
+        description: error.message || "Please try again",
         variant: "destructive",
       });
     } finally {

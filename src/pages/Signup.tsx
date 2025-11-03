@@ -11,6 +11,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const Signup = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -136,7 +137,21 @@ const Signup = () => {
   const handleSendOtp = async () => {
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const { error } = await supabase.auth.signInWithOtp({
+        phone: `+91${formData.phoneNumber}`,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone_number: formData.phoneNumber,
+            email: formData.email,
+            address: formData.address,
+          }
+        }
+      });
+
+      if (error) throw error;
+
       setIsOtpSent(true);
       setResendTimer(60);
       
@@ -144,10 +159,10 @@ const Signup = () => {
         title: "OTP Sent Successfully",
         description: `Verification code sent to +91 ${formData.phoneNumber}`,
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Failed to Send OTP",
-        description: "Please try again later",
+        description: error.message || "Please try again later",
         variant: "destructive",
       });
     } finally {
@@ -163,14 +178,26 @@ const Signup = () => {
     
     setIsVerifying(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const { error } = await supabase.auth.verifyOtp({
+        phone: `+91${formData.phoneNumber}`,
+        token: formData.otp,
+        type: 'sms'
+      });
+
+      if (error) throw error;
+
       setCurrentStep(3);
       toast({
         title: "Phone Verified",
         description: "Phone number verified successfully",
       });
-    } catch (error) {
-      setErrors({ otp: 'Invalid OTP. Please try again.' });
+    } catch (error: any) {
+      setErrors({ otp: error.message || 'Invalid OTP. Please try again.' });
+      toast({
+        title: "Verification Failed",
+        description: error.message || "Invalid OTP. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsVerifying(false);
     }
@@ -229,21 +256,21 @@ const Signup = () => {
       });
       console.log("User data saved to Firestore successfully");
       
-      // Use Supabase signup
-      const { error } = await signup(formData.email, formData.otp, {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        phoneNumber: formData.phoneNumber,
-        address: formData.address
-      });
+      // User is already authenticated via OTP verification, just update profile
+      const { data: { user } } = await supabase.auth.getUser();
       
-      if (error) {
-        throw error;
+      if (user) {
+        // Update user metadata
+        await supabase.auth.updateUser({
+          data: {
+            document_url: documentUrl
+          }
+        });
       }
       
       toast({
         title: "Registration Successful",
-        description: "Please check your email to verify your account, then log in.",
+        description: "Your account has been created successfully!",
       });
       
       console.log("Registration complete, navigating to login...");
