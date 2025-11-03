@@ -110,7 +110,7 @@ const Dashboard = () => {
                 {/* Profile Picture */}
                 <div className="flex items-center space-x-4">
                   <Avatar className="h-20 w-20 border-4 border-white/20">
-                    <AvatarImage src={user.profileImage} />
+                    <AvatarImage src="" />
                     <AvatarFallback className="bg-primary text-primary-foreground text-xl">
                       {user.firstName.charAt(0)}{user.lastName.charAt(0)}
                     </AvatarFallback>
@@ -119,11 +119,6 @@ const Dashboard = () => {
                     <h3 className="text-xl font-semibold text-white">
                       {user.firstName} {user.lastName}
                     </h3>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Badge className={user.isKycVerified ? 'bg-success/20 text-success border-success/30' : 'bg-accent/20 text-accent border-accent/30'}>
-                        {user.isKycVerified ? '✓ KYC Verified' : 'KYC Pending'}
-                      </Badge>
-                    </div>
                   </div>
                 </div>
 
@@ -167,32 +162,6 @@ const Dashboard = () => {
           <div className="space-y-6">
             <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
               <CardHeader>
-                <CardTitle className="text-white">Quick Stats</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/80">Total Bookings</span>
-                    <span className="text-white font-bold text-xl">{user.bookingHistory.length}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/80">Completed</span>
-                    <span className="text-success font-bold">
-                      {user.bookingHistory.filter(b => b.status === 'completed').length}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/80">Ongoing</span>
-                    <span className="text-accent font-bold">
-                      {user.bookingHistory.filter(b => b.status === 'ongoing').length}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
-              <CardHeader>
                 <CardTitle className="text-white">Account Status</CardTitle>
               </CardHeader>
               <CardContent>
@@ -205,14 +174,6 @@ const Dashboard = () => {
                     <span className="text-white/80">Phone Verified</span>
                     <CheckCircle className="h-5 w-5 text-success" />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-white/80">KYC Status</span>
-                    {user.isKycVerified ? (
-                      <CheckCircle className="h-5 w-5 text-success" />
-                    ) : (
-                      <Clock className="h-5 w-5 text-accent" />
-                    )}
-                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -224,36 +185,12 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle className="text-white">Booking History</CardTitle>
             <CardDescription className="text-white/70">
-              Your recent service bookings and their status
+              Your recent service bookings will appear here
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {user.bookingHistory.map((booking) => (
-                <div key={booking.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-2 bg-primary/20 rounded-lg">
-                      <Calendar className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-white">{booking.serviceName}</h4>
-                      <p className="text-sm text-white/60">{booking.date}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right">
-                      <p className="font-semibold text-white">₹{booking.amount.toLocaleString()}</p>
-                      <div className="flex items-center space-x-1">
-                        {getStatusIcon(booking.status)}
-                        <Badge variant="outline" className={getStatusColor(booking.status)}>
-                          {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="text-center py-8 text-white/70">
+              No bookings yet. Book equipment or hire farmers to get started!
             </div>
           </CardContent>
         </Card>

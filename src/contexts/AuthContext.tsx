@@ -15,9 +15,6 @@ interface AuthUser {
   email: string;
   phoneNumber: string;
   address: string;
-  isKycVerified: boolean;
-  documentUrl: string;
-  bookings: BookingRecord[];
 }
 
 interface AuthContextType {
@@ -58,16 +55,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
 
       if (data) {
+        // Get email from auth session
+        const { data: { session } } = await supabase.auth.getSession();
+        
         setUser({
           id: data.id,
-          firstName: data.first_name,
-          lastName: data.last_name,
-          email: data.email,
-          phoneNumber: data.phone_number,
-          address: data.address || '',
-          isKycVerified: data.is_kyc_verified || false,
-          documentUrl: data.document_url || '',
-          bookings: []
+          firstName: data.first_name || '',
+          lastName: data.last_name || '',
+          email: session?.user?.email || '',
+          phoneNumber: data.phone_number || '',
+          address: data.address || ''
         });
       }
     } catch (error) {

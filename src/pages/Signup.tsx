@@ -40,7 +40,7 @@ const Signup = () => {
   
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { signup, isAuthenticated } = useAuth();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -229,23 +229,25 @@ const Signup = () => {
       });
       console.log("User data saved to Firestore successfully");
       
-      // Register user with all details including document
-      login(formData.phoneNumber, {
+      // Use Supabase signup
+      const { error } = await signup(formData.email, formData.otp, {
         firstName: formData.firstName,
         lastName: formData.lastName,
-        email: formData.email,
-        address: formData.address,
-        isKycVerified: false,
-        documentUrl: documentUrl
+        phoneNumber: formData.phoneNumber,
+        address: formData.address
       });
+      
+      if (error) {
+        throw error;
+      }
       
       toast({
         title: "Registration Successful",
-        description: "Welcome to KisanSeva Plus! KYC verification pending.",
+        description: "Please check your email to verify your account, then log in.",
       });
       
-      console.log("Registration complete, navigating to dashboard...");
-      navigate('/dashboard');
+      console.log("Registration complete, navigating to login...");
+      navigate('/login');
     } catch (error: any) {
       console.error('Registration error:', error);
       

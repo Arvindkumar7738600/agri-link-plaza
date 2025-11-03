@@ -92,11 +92,13 @@ const Login = () => {
     setIsVerifying(true);
     
     try {
-      // Simulate OTP verification
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Use actual Supabase authentication
+      // For now, this is a placeholder - proper phone auth needs to be implemented
+      const { error } = await login(`${phoneNumber}@temp.com`, otp);
       
-      // Store user data with login time
-      login(phoneNumber, {});
+      if (error) {
+        throw error;
+      }
       
       toast({
         title: "Login Successful",

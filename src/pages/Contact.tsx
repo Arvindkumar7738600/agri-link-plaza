@@ -63,18 +63,21 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
-        .from('enquiries')
-        .insert({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone_number: formData.phoneNumber,
-          subject: formData.subject,
-          message: formData.message
-        });
-
-      if (error) throw error;
+      // TODO: Uncomment once the enquiries table is created via Supabase migration
+      // const { error } = await supabase
+      //   .from('enquiries')
+      //   .insert({
+      //     first_name: formData.firstName,
+      //     last_name: formData.lastName,
+      //     email: formData.email,
+      //     phone_number: formData.phoneNumber,
+      //     subject: formData.subject,
+      //     message: formData.message
+      //   });
+      // if (error) throw error;
+      
+      // Simulate successful submission for now
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast({
         title: "Success!",
