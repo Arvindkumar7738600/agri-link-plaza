@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Phone, ArrowRight, CheckCircle, Loader2, AlertCircle, User } from "lucide-react";
+import { Mail, ArrowRight, CheckCircle, Loader2, AlertCircle, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,17 +11,17 @@ import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  const [phoneError, setPhoneError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [otpError, setOtpError] = useState("");
   
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -41,21 +41,21 @@ const Login = () => {
     return () => clearInterval(interval);
   }, [resendTimer]);
 
-  const validatePhoneNumber = (phone: string) => {
-    const phoneRegex = /^[6-9]\d{9}$/;
-    return phoneRegex.test(phone);
+  const validateEmail = (emailValue: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(emailValue);
   };
 
   const handleSendOtp = async () => {
-    setPhoneError("");
+    setEmailError("");
     
-    if (!phoneNumber) {
-      setPhoneError("Phone number is required");
+    if (!email) {
+      setEmailError("Email is required");
       return;
     }
     
-    if (!validatePhoneNumber(phoneNumber)) {
-      setPhoneError("Please enter a valid 10-digit mobile number");
+    if (!validateEmail(email)) {
+      setEmailError("Please enter a valid email address");
       return;
     }
 
@@ -63,24 +63,31 @@ const Login = () => {
     
     try {
       const { error } = await supabase.auth.signInWithOtp({
-        phone: `+91${phoneNumber}`,
+        email: email,
+        options: {
+          shouldCreateUser: false, // Only allow existing users to login
+        }
       });
 
       if (error) throw error;
 
       setIsOtpSent(true);
-      setResendTimer(30);
+      setResendTimer(60);
       
       toast({
         title: "OTP Sent Successfully",
-        description: `Verification code sent to +91 ${phoneNumber}`,
+        description: `Verification code sent to ${email}`,
       });
     } catch (error: any) {
-      toast({
-        title: "Failed to Send OTP",
-        description: error.message || "Please try again later",
-        variant: "destructive",
-      });
+      if (error.message?.includes("Signups not allowed")) {
+        setEmailError("Account not found. Please sign up first.");
+      } else {
+        toast({
+          title: "Failed to Send OTP",
+          description: error.message || "Please try again later",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -98,9 +105,9 @@ const Login = () => {
     
     try {
       const { error } = await supabase.auth.verifyOtp({
-        phone: `+91${phoneNumber}`,
+        email: email,
         token: otp,
-        type: 'sms'
+        type: 'email'
       });
       
       if (error) throw error;
@@ -131,15 +138,18 @@ const Login = () => {
     
     try {
       const { error } = await supabase.auth.signInWithOtp({
-        phone: `+91${phoneNumber}`,
+        email: email,
+        options: {
+          shouldCreateUser: false,
+        }
       });
 
       if (error) throw error;
       
-      setResendTimer(30);
+      setResendTimer(60);
       toast({
         title: "OTP Resent",
-        description: "New verification code sent to your phone",
+        description: "New verification code sent to your email",
       });
     } catch (error: any) {
       toast({
@@ -188,25 +198,24 @@ const Login = () => {
                   <>
                     <div>
                       <label className="text-sm font-medium text-white/80 mb-2 block">
-                        Phone Number
+                        Email Address
                       </label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
                         <Input 
-                          type="tel" 
-                          placeholder="Enter 10-digit mobile number"
-                          className={`pl-10 bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-white/50 focus:border-white/40 focus:ring-2 focus:ring-white/20 ${phoneError ? 'border-red-400' : ''}`}
-                          value={phoneNumber}
+                          type="email" 
+                          placeholder="Enter your email address"
+                          className={`pl-10 bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-white/50 focus:border-white/40 focus:ring-2 focus:ring-white/20 ${emailError ? 'border-red-400' : ''}`}
+                          value={email}
                           onChange={(e) => {
-                            setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10));
-                            setPhoneError("");
+                            setEmail(e.target.value);
+                            setEmailError("");
                           }}
-                          maxLength={10}
                         />
-                        {phoneError && (
+                        {emailError && (
                           <div className="flex items-center mt-2 text-sm text-red-300">
                             <AlertCircle className="h-4 w-4 mr-1" />
-                            {phoneError}
+                            {emailError}
                           </div>
                         )}
                       </div>
@@ -237,7 +246,7 @@ const Login = () => {
                         <span className="text-sm font-medium text-white">OTP Sent Successfully</span>
                       </div>
                       <p className="text-sm text-white/70">
-                        Verification code sent to +91 {phoneNumber}
+                        Verification code sent to {email}
                       </p>
                     </div>
                     
@@ -319,7 +328,7 @@ const Login = () => {
                           setOtpError("");
                           setResendTimer(0);
                         }} className="text-white/80 hover:text-white hover:bg-white/10">
-                          Change Phone Number
+                          Change Email Address
                         </Button>
                       </div>
                     </div>
