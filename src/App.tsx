@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ChatBot from "./components/ChatBot";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Services from "./pages/Services";
@@ -54,6 +55,7 @@ const App = () => (
               </Routes>
             </main>
             <Footer />
+            <ChatBot />
           </div>
         </BrowserRouter>
       </TooltipProvider>

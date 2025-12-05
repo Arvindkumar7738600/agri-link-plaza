@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Phone, User, Mail, MapPin, Upload, ArrowRight, CheckCircle, Loader2, AlertCircle, Camera, FileUp, Navigation } from "lucide-react";
+import { Phone, User, Mail, MapPin, Upload, ArrowRight, CheckCircle, Loader2, AlertCircle, Camera, FileUp, Navigation, Lock, Eye, EyeOff } from "lucide-react";
 import { uploadDocumentToCloudinary } from "@/lib/cloudinary";
 import { saveUserToFirestore } from "@/lib/firestore";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,12 +16,14 @@ import { supabase } from "@/integrations/supabase/client";
 
 const Signup = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [signupMethod, setSignupMethod] = useState<"otp" | "password">("otp");
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [uploadMethod, setUploadMethod] = useState<'camera' | 'file' | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -29,6 +32,7 @@ const Signup = () => {
     firstName: '',
     lastName: '',
     email: '',
+    password: '',
     phoneNumber: '',
     address: '',
     otp: '',
@@ -126,6 +130,10 @@ const Signup = () => {
     if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email format';
+    if (signupMethod === "password") {
+      if (!formData.password) newErrors.password = 'Password is required';
+      else if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+    }
     if (!formData.phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
     else if (!/^[6-9]\d{9}$/.test(formData.phoneNumber)) newErrors.phoneNumber = 'Invalid phone number';
     if (!formData.address.trim()) newErrors.address = 'Address is required';
@@ -203,6 +211,49 @@ const Signup = () => {
     }
   };
 
+  const handlePasswordSignup = async () => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone_number: formData.phoneNumber,
+            email: formData.email,
+            address: formData.address,
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      setCurrentStep(3);
+      toast({
+        title: "Account Created",
+        description: "Please complete KYC to finish registration",
+      });
+    } catch (error: any) {
+      if (error.message?.includes("already registered")) {
+        toast({
+          title: "Account Exists",
+          description: "This email is already registered. Please login instead.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Signup Failed",
+          description: error.message || "Please try again later",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -334,6 +385,18 @@ const Signup = () => {
               {/* Step 1: Basic Information */}
               {currentStep === 1 && (
                 <>
+                  {/* Signup Method Toggle */}
+                  <Tabs value={signupMethod} onValueChange={(v) => setSignupMethod(v as "otp" | "password")} className="mb-4">
+                    <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-sm">
+                      <TabsTrigger value="otp" className="data-[state=active]:bg-primary data-[state=active]:text-white text-white/70 text-xs">
+                        Email OTP
+                      </TabsTrigger>
+                      <TabsTrigger value="password" className="data-[state=active]:bg-primary data-[state=active]:text-white text-white/70 text-xs">
+                        Password
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-white/80 mb-2 block">
@@ -395,6 +458,38 @@ const Signup = () => {
                       )}
                     </div>
                   </div>
+
+                  {/* Password field - only for password signup */}
+                  {signupMethod === "password" && (
+                    <div>
+                      <label className="text-sm font-medium text-white/80 mb-2 block">
+                        Password
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
+                        <Input 
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Create a password (min 6 characters)" 
+                          className="pl-10 pr-10 bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-white/50 focus:border-white/40"
+                          value={formData.password}
+                          onChange={(e) => updateFormData('password', e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                        {errors.password && (
+                          <div className="flex items-center mt-1 text-sm text-red-300">
+                            <AlertCircle className="h-4 w-4 mr-1" />
+                            {errors.password}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                   
                   <div>
                     <label className="text-sm font-medium text-white/80 mb-2 block">
@@ -476,105 +571,136 @@ const Signup = () => {
               {/* Step 2: Email Verification */}
               {currentStep === 2 && (
                 <>
-                  {!isOtpSent ? (
+                  {signupMethod === "otp" ? (
+                    // OTP Verification
+                    !isOtpSent ? (
+                      <>
+                        <div className="text-center">
+                          <h3 className="text-lg font-semibold mb-2 text-white">Verify Email Address</h3>
+                          <p className="text-sm text-white/70 mb-6">
+                            We'll send an OTP to {formData.email}
+                          </p>
+                        </div>
+                        
+                        <Button 
+                          className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary-dark hover:to-secondary-dark text-white font-semibold py-3 rounded-xl shadow-lg border-0" 
+                          size="lg"
+                          onClick={handleSendOtp}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Sending OTP...
+                            </>
+                          ) : (
+                            'Send OTP'
+                          )}
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-center mb-4">
+                          <div className="flex items-center justify-center mb-2">
+                            <CheckCircle className="h-5 w-5 text-green-400 mr-2" />
+                            <span className="text-sm font-medium text-white">OTP Sent Successfully</span>
+                          </div>
+                          <p className="text-sm text-white/70">
+                            Verification code sent to {formData.email}
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <label className="text-sm font-medium text-white/80 mb-3 block text-center">
+                            Enter 6-Digit OTP
+                          </label>
+                          <div className="flex justify-center">
+                            <InputOTP
+                              maxLength={6}
+                              value={formData.otp}
+                              onChange={(value) => updateFormData('otp', value)}
+                              className="gap-2"
+                            >
+                              <InputOTPGroup className="gap-2">
+                                <InputOTPSlot index={0} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                                <InputOTPSlot index={1} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                                <InputOTPSlot index={2} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                                <InputOTPSlot index={3} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                                <InputOTPSlot index={4} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                                <InputOTPSlot index={5} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
+                              </InputOTPGroup>
+                            </InputOTP>
+                          </div>
+                          {errors.otp && (
+                            <div className="flex items-center justify-center mt-2 text-sm text-red-300">
+                              <AlertCircle className="h-4 w-4 mr-1" />
+                              {errors.otp}
+                            </div>
+                          )}
+                        </div>
+                        
+                        <Button 
+                          className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary-dark hover:to-secondary-dark text-white font-semibold py-3 rounded-xl shadow-lg border-0" 
+                          size="lg"
+                          onClick={handleVerifyOtp}
+                          disabled={isVerifying || formData.otp.length !== 6}
+                        >
+                          {isVerifying ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Verifying...
+                            </>
+                          ) : (
+                            <>
+                              Verify & Continue <CheckCircle className="ml-2 h-4 w-4" />
+                            </>
+                          )}
+                        </Button>
+                        
+                        <div className="text-center">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={handleSendOtp}
+                            disabled={resendTimer > 0 || isLoading}
+                            className="text-white/80 hover:text-white hover:bg-white/10"
+                          >
+                            {resendTimer > 0 ? (
+                              `Resend OTP in ${resendTimer}s`
+                            ) : (
+                              "Resend OTP"
+                            )}
+                          </Button>
+                        </div>
+                      </>
+                    )
+                  ) : (
+                    // Password Signup - Create account
                     <>
                       <div className="text-center">
-                        <h3 className="text-lg font-semibold mb-2 text-white">Verify Email Address</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-white">Create Your Account</h3>
                         <p className="text-sm text-white/70 mb-6">
-                          We'll send an OTP to {formData.email}
+                          Click below to create your account with password
                         </p>
                       </div>
                       
                       <Button 
                         className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary-dark hover:to-secondary-dark text-white font-semibold py-3 rounded-xl shadow-lg border-0" 
                         size="lg"
-                        onClick={handleSendOtp}
+                        onClick={handlePasswordSignup}
                         disabled={isLoading}
                       >
                         {isLoading ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Sending OTP...
-                          </>
-                        ) : (
-                          'Send OTP'
-                        )}
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-center mb-4">
-                        <div className="flex items-center justify-center mb-2">
-                          <CheckCircle className="h-5 w-5 text-green-400 mr-2" />
-                          <span className="text-sm font-medium text-white">OTP Sent Successfully</span>
-                        </div>
-                        <p className="text-sm text-white/70">
-                          Verification code sent to {formData.email}
-                        </p>
-                      </div>
-                      
-                      <div>
-                        <label className="text-sm font-medium text-white/80 mb-3 block text-center">
-                          Enter 6-Digit OTP
-                        </label>
-                        <div className="flex justify-center">
-                          <InputOTP
-                            maxLength={6}
-                            value={formData.otp}
-                            onChange={(value) => updateFormData('otp', value)}
-                            className="gap-2"
-                          >
-                            <InputOTPGroup className="gap-2">
-                              <InputOTPSlot index={0} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
-                              <InputOTPSlot index={1} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
-                              <InputOTPSlot index={2} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
-                              <InputOTPSlot index={3} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
-                              <InputOTPSlot index={4} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
-                              <InputOTPSlot index={5} className="bg-white/10 backdrop-blur-sm border-white/20 text-white focus:border-white/40" />
-                            </InputOTPGroup>
-                          </InputOTP>
-                        </div>
-                        {errors.otp && (
-                          <div className="flex items-center justify-center mt-2 text-sm text-red-300">
-                            <AlertCircle className="h-4 w-4 mr-1" />
-                            {errors.otp}
-                          </div>
-                        )}
-                      </div>
-                      
-                      <Button 
-                        className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary-dark hover:to-secondary-dark text-white font-semibold py-3 rounded-xl shadow-lg border-0" 
-                        size="lg"
-                        onClick={handleVerifyOtp}
-                        disabled={isVerifying || formData.otp.length !== 6}
-                      >
-                        {isVerifying ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Verifying...
+                            Creating Account...
                           </>
                         ) : (
                           <>
-                            Verify & Continue <CheckCircle className="ml-2 h-4 w-4" />
+                            Create Account <ArrowRight className="ml-2 h-4 w-4" />
                           </>
                         )}
                       </Button>
-                      
-                      <div className="text-center">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={handleSendOtp}
-                          disabled={resendTimer > 0 || isLoading}
-                          className="text-white/80 hover:text-white hover:bg-white/10"
-                        >
-                          {resendTimer > 0 ? (
-                            `Resend OTP in ${resendTimer}s`
-                          ) : (
-                            "Resend OTP"
-                          )}
-                        </Button>
-                      </div>
                     </>
                   )}
                 </>
@@ -595,8 +721,8 @@ const Signup = () => {
                       <>
                         <div className="border-2 border-dashed border-white/20 rounded-lg p-6 bg-white/5 backdrop-blur-sm">
                           <Upload className="h-8 w-8 text-white/60 mx-auto mb-3" />
-                          <p className="text-sm font-medium mb-1 text-white">Upload Aadhaar Card</p>
-                          <p className="text-xs text-white/60 mb-4">Choose how you want to upload (Max 5MB)</p>
+                          <p className="text-sm font-medium mb-1 text-white text-center">Upload Aadhaar Card</p>
+                          <p className="text-xs text-white/60 mb-4 text-center">Choose how you want to upload (Max 5MB)</p>
                           
                           <div className="grid grid-cols-2 gap-3">
                             <Button
