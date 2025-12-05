@@ -41,7 +41,7 @@ const Signup = () => {
   
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { signup, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -138,7 +138,7 @@ const Signup = () => {
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOtp({
-        phone: `+91${formData.phoneNumber}`,
+        email: formData.email,
         options: {
           data: {
             first_name: formData.firstName,
@@ -157,7 +157,7 @@ const Signup = () => {
       
       toast({
         title: "OTP Sent Successfully",
-        description: `Verification code sent to +91 ${formData.phoneNumber}`,
+        description: `Verification code sent to ${formData.email}`,
       });
     } catch (error: any) {
       toast({
@@ -179,17 +179,17 @@ const Signup = () => {
     setIsVerifying(true);
     try {
       const { error } = await supabase.auth.verifyOtp({
-        phone: `+91${formData.phoneNumber}`,
+        email: formData.email,
         token: formData.otp,
-        type: 'sms'
+        type: 'email'
       });
 
       if (error) throw error;
 
       setCurrentStep(3);
       toast({
-        title: "Phone Verified",
-        description: "Phone number verified successfully",
+        title: "Email Verified",
+        description: "Email verified successfully",
       });
     } catch (error: any) {
       setErrors({ otp: error.message || 'Invalid OTP. Please try again.' });
@@ -273,8 +273,8 @@ const Signup = () => {
         description: "Your account has been created successfully!",
       });
       
-      console.log("Registration complete, navigating to login...");
-      navigate('/login');
+      console.log("Registration complete, navigating to dashboard...");
+      navigate('/dashboard');
     } catch (error: any) {
       console.error('Registration error:', error);
       
@@ -326,7 +326,7 @@ const Signup = () => {
               <CardTitle className="text-2xl font-bold text-white">Join KisanSeva Plus</CardTitle>
               <CardDescription className="text-white/80">
                 {currentStep === 1 && "Create your account - Step 1 of 3"}
-                {currentStep === 2 && "Verify your phone - Step 2 of 3"}
+                {currentStep === 2 && "Verify your email - Step 2 of 3"}
                 {currentStep === 3 && "Complete KYC - Step 3 of 3"}
               </CardDescription>
             </CardHeader>
@@ -473,15 +473,15 @@ const Signup = () => {
                 </>
               )}
 
-              {/* Step 2: Phone Verification */}
+              {/* Step 2: Email Verification */}
               {currentStep === 2 && (
                 <>
                   {!isOtpSent ? (
                     <>
                       <div className="text-center">
-                        <h3 className="text-lg font-semibold mb-2 text-white">Verify Phone Number</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-white">Verify Email Address</h3>
                         <p className="text-sm text-white/70 mb-6">
-                          We'll send an OTP to +91 {formData.phoneNumber}
+                          We'll send an OTP to {formData.email}
                         </p>
                       </div>
                       
@@ -505,11 +505,11 @@ const Signup = () => {
                     <>
                       <div className="text-center mb-4">
                         <div className="flex items-center justify-center mb-2">
-                          <CheckCircle className="h-5 w-5 text-success mr-2" />
+                          <CheckCircle className="h-5 w-5 text-green-400 mr-2" />
                           <span className="text-sm font-medium text-white">OTP Sent Successfully</span>
                         </div>
                         <p className="text-sm text-white/70">
-                          Verification code sent to +91 {formData.phoneNumber}
+                          Verification code sent to {formData.email}
                         </p>
                       </div>
                       
@@ -647,7 +647,7 @@ const Signup = () => {
                       <div className="border-2 border-white/20 rounded-lg p-6 bg-white/5 backdrop-blur-sm">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <CheckCircle className="h-6 w-6 text-success" />
+                            <CheckCircle className="h-6 w-6 text-green-400" />
                             <div>
                               <p className="text-sm font-medium text-white">Document Uploaded</p>
                               <p className="text-xs text-white/60">{formData.aadhaarFile.name}</p>
