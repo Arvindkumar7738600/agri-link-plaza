@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Mail, ArrowRight, CheckCircle, Loader2, AlertCircle, User, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, ArrowRight, CheckCircle, Loader2, AlertCircle, User, Lock, Eye, EyeOff, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,6 +24,9 @@ const Login = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [otpError, setOtpError] = useState("");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [isSendingReset, setIsSendingReset] = useState(false);
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -226,7 +230,53 @@ const Login = () => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!forgotEmail) {
+      toast({
+        title: "Email Required",
+        description: "Please enter your email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(forgotEmail)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSendingReset(true);
+    
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+        redirectTo: `${window.location.origin}/login`,
+      });
+
+      if (error) throw error;
+      
+      toast({
+        title: "Reset Link Sent",
+        description: "Check your email for the password reset link",
+      });
+      setShowForgotPassword(false);
+      setForgotEmail("");
+    } catch (error: any) {
+      toast({
+        title: "Failed to Send Reset Link",
+        description: error.message || "Please try again later",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingReset(false);
+    }
+  };
+
   return (
+    <>
     <div 
       className="min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden"
       style={{
@@ -486,6 +536,21 @@ const Login = () => {
                       </>
                     )}
                   </Button>
+
+                  <div className="text-center">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setForgotEmail(email);
+                        setShowForgotPassword(true);
+                      }}
+                      className="text-white/80 hover:text-white hover:bg-white/10"
+                    >
+                      <KeyRound className="h-4 w-4 mr-1" />
+                      Forgot Password?
+                    </Button>
+                  </div>
                 </TabsContent>
               </Tabs>
               
@@ -505,6 +570,48 @@ const Login = () => {
         </div>
       </div>
     </div>
+
+    {/* Forgot Password Dialog */}
+    <Dialog open={showForgotPassword} onOpenChange={setShowForgotPassword}>
+      <DialogContent className="bg-card border-border">
+        <DialogHeader>
+          <DialogTitle>Reset Password</DialogTitle>
+          <DialogDescription>
+            Enter your email address and we'll send you a link to reset your password.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 pt-4">
+          <div>
+            <label className="text-sm font-medium mb-2 block">Email Address</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                className="pl-10"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+              />
+            </div>
+          </div>
+          <Button
+            className="w-full bg-gradient-to-r from-primary to-secondary"
+            onClick={handleForgotPassword}
+            disabled={isSendingReset}
+          >
+            {isSendingReset ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              "Send Reset Link"
+            )}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  </>
   );
 };
 
