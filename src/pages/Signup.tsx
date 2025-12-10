@@ -305,7 +305,7 @@ const Signup = () => {
         .from('kyc_documents')
         .insert({
           user_id: user.id,
-          document_type: 'aadhaar',
+          document_type: 'aadhaar_front',
           file_name: formData.aadhaarFile.name,
           file_path: documentUrl,
           file_size: formData.aadhaarFile.size,
