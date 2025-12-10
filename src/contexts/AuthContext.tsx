@@ -49,17 +49,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', userId)
+        .eq('user_id', userId)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        // If profile doesn't exist yet, create minimal user from auth session
+        if (error.code === 'PGRST116') {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            const metadata = session.user.user_metadata;
+            setUser({
+              id: session.user.id,
+              firstName: metadata?.first_name || '',
+              lastName: metadata?.last_name || '',
+              email: session.user.email || '',
+              phoneNumber: metadata?.phone_number || '',
+              address: metadata?.address || ''
+            });
+          }
+          return;
+        }
+        throw error;
+      }
 
       if (data) {
         // Get email from auth session
         const { data: { session } } = await supabase.auth.getSession();
         
         setUser({
-          id: data.id,
+          id: data.user_id,
           firstName: data.first_name || '',
           lastName: data.last_name || '',
           email: session?.user?.email || '',
