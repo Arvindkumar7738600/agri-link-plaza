@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Phone, User, Mail, MapPin, Upload, ArrowRight, CheckCircle, Loader2, AlertCircle, Camera, FileUp, Navigation, Lock, Eye, EyeOff } from "lucide-react";
 import { uploadDocumentToCloudinary } from "@/lib/cloudinary";
-import { saveUserToFirestore } from "@/lib/firestore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -286,38 +285,47 @@ const Signup = () => {
     console.log("Starting registration process...");
     
     try {
+      // Get current authenticated user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        throw new Error("User not authenticated. Please verify OTP first.");
+      }
+      
+      console.log("User authenticated:", user.id);
+      
       // Upload document to Cloudinary
       console.log("Attempting to upload to Cloudinary...");
-      const documentUrl = await uploadDocumentToCloudinary(formData.aadhaarFile, formData.phoneNumber);
+      const documentUrl = await uploadDocumentToCloudinary(formData.aadhaarFile, user.id);
       console.log("Document uploaded successfully:", documentUrl);
       
-      // Generate unique user ID using phone number
-      const userId = `user_${formData.phoneNumber}`;
-      
-      // Save user data to Firestore
-      console.log("Saving user data to Firestore...");
-      await saveUserToFirestore(userId, {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        address: formData.address,
-        isKycVerified: false,
-        documentUrl: documentUrl
-      });
-      console.log("User data saved to Firestore successfully");
-      
-      // User is already authenticated via OTP verification, just update profile
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user) {
-        // Update user metadata
-        await supabase.auth.updateUser({
-          data: {
-            document_url: documentUrl
-          }
+      // Save document record to Supabase kyc_documents table
+      console.log("Saving KYC document to Supabase...");
+      const { error: kycError } = await supabase
+        .from('kyc_documents')
+        .insert({
+          user_id: user.id,
+          document_type: 'aadhaar',
+          file_name: formData.aadhaarFile.name,
+          file_path: documentUrl,
+          file_size: formData.aadhaarFile.size,
+          verification_status: 'pending'
         });
+      
+      if (kycError) {
+        console.error("KYC document save error:", kycError);
+        throw new Error("Failed to save document. Please try again.");
       }
+      
+      console.log("KYC document saved to Supabase successfully");
+      
+      // Update user metadata with document URL
+      await supabase.auth.updateUser({
+        data: {
+          document_url: documentUrl,
+          kyc_status: 'pending'
+        }
+      });
       
       toast({
         title: "Registration Successful",
