@@ -45,10 +45,9 @@ export const EditProfileDialog = ({ open, onOpenChange, user, onUpdate }: EditPr
         .update({
           first_name: formData.firstName,
           last_name: formData.lastName,
-          email: formData.email,
           address: formData.address,
         })
-        .eq('id', currentUser.id);
+        .eq('user_id', currentUser.id);
 
       if (error) throw error;
 

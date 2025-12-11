@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
-import { saveBookingToFirestore } from "@/lib/firestore";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
 const BookingDetails = () => {
@@ -25,24 +25,36 @@ const BookingDetails = () => {
     address: ""
   });
 
-  // Get user's location for address auto-fill
+  // Get user's location and convert to readable address
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const { latitude, longitude } = position.coords;
-          // In a real app, you would use Google Maps Geocoding API here
-          // For demo purposes, we'll set a placeholder address
-          setFormData(prev => ({
-            ...prev,
-            address: `Lat: ${latitude.toFixed(4)}, Long: ${longitude.toFixed(4)}, Jharkhand, India`
-          }));
+          try {
+            // Use reverse geocoding to get location name
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
+            );
+            const data = await response.json();
+            const address = data.display_name || `${data.address?.village || data.address?.city || ''}, ${data.address?.state || ''}, India`;
+            setFormData(prev => ({
+              ...prev,
+              address: address
+            }));
+          } catch (error) {
+            console.error("Geocoding error:", error);
+            setFormData(prev => ({
+              ...prev,
+              address: "Please enter your address manually"
+            }));
+          }
         },
         (error) => {
           console.error("Error getting location:", error);
           setFormData(prev => ({
             ...prev,
-            address: "Unable to get location. Please enter manually."
+            address: "Please enter your address manually"
           }));
         }
       );
@@ -82,20 +94,27 @@ const BookingDetails = () => {
     setIsSubmitting(true);
 
     try {
-      // Save to Firestore
-      await saveBookingToFirestore({
-        equipmentName: equipment.name,
-        equipmentLocation: equipment.location,
-        equipmentPower: equipment.power,
-        owner: equipment.owner,
-        clientName: formData.fullName,
-        clientPhone: formData.phoneNumber,
-        clientAddress: formData.address,
-        date: formData.date,
-        time: formData.time,
-        hourlyRate: equipment.price,
-        dailyRate: equipment.dailyPrice
+      // Get current user
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) throw new Error("Not authenticated");
+
+      // Save to Supabase
+      const { error } = await supabase.from('bookings').insert({
+        user_id: currentUser.id,
+        equipment_name: equipment.name,
+        equipment_location: equipment.location,
+        equipment_power: equipment.power,
+        owner_name: equipment.owner,
+        client_name: formData.fullName,
+        client_phone: formData.phoneNumber,
+        client_address: formData.address,
+        booking_date: formData.date,
+        booking_time: formData.time,
+        hourly_rate: equipment.price,
+        daily_rate: equipment.dailyPrice
       });
+
+      if (error) throw error;
 
       toast({
         title: "Booking Successful!",
