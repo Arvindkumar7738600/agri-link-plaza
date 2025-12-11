@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          booking_date: string
+          booking_time: string
+          client_address: string | null
+          client_name: string
+          client_phone: string
+          created_at: string
+          daily_rate: string | null
+          equipment_location: string | null
+          equipment_name: string
+          equipment_power: string | null
+          hourly_rate: string | null
+          id: string
+          owner_name: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          booking_date: string
+          booking_time: string
+          client_address?: string | null
+          client_name: string
+          client_phone: string
+          created_at?: string
+          daily_rate?: string | null
+          equipment_location?: string | null
+          equipment_name: string
+          equipment_power?: string | null
+          hourly_rate?: string | null
+          id?: string
+          owner_name?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          booking_date?: string
+          booking_time?: string
+          client_address?: string | null
+          client_name?: string
+          client_phone?: string
+          created_at?: string
+          daily_rate?: string | null
+          equipment_location?: string | null
+          equipment_name?: string
+          equipment_power?: string | null
+          hourly_rate?: string | null
+          id?: string
+          owner_name?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kyc_documents: {
         Row: {
           created_at: string
