@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, Globe, ChevronDown, User, LogOut } from "lucide-react";
+import { Menu, X, Globe, ChevronDown, User, LogOut, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -65,6 +65,19 @@ const Header = () => {
 
           {/* Language Selector & User Actions */}
           <div className="hidden md:flex items-center space-x-3">
+            {/* Join Provider CTA */}
+            <Button 
+              asChild 
+              size="sm"
+              className="rounded-full px-4 py-2 font-semibold shadow-lg shadow-primary/25 animate-pulse hover:animate-none"
+              style={{ background: 'var(--gradient-primary)' }}
+            >
+              <Link to="/join-provider" className="flex items-center gap-2">
+                <UserPlus className="h-4 w-4" />
+                Join as Provider
+              </Link>
+            </Button>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-accent/10 to-secondary/10 backdrop-blur-sm border border-border/50">

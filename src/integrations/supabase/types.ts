@@ -71,6 +71,201 @@ export type Database = {
         }
         Relationships: []
       }
+      equipment_listings: {
+        Row: {
+          availability_status: string
+          brand: string | null
+          created_at: string
+          daily_rate: number | null
+          description: string | null
+          district: string | null
+          equipment_name: string
+          equipment_type: string
+          features: string[] | null
+          hourly_rate: number | null
+          id: string
+          is_active: boolean
+          location: string | null
+          model: string | null
+          photos: string[] | null
+          power_capacity: string | null
+          provider_id: string
+          state: string | null
+          updated_at: string
+        }
+        Insert: {
+          availability_status?: string
+          brand?: string | null
+          created_at?: string
+          daily_rate?: number | null
+          description?: string | null
+          district?: string | null
+          equipment_name: string
+          equipment_type: string
+          features?: string[] | null
+          hourly_rate?: number | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          model?: string | null
+          photos?: string[] | null
+          power_capacity?: string | null
+          provider_id: string
+          state?: string | null
+          updated_at?: string
+        }
+        Update: {
+          availability_status?: string
+          brand?: string | null
+          created_at?: string
+          daily_rate?: number | null
+          description?: string | null
+          district?: string | null
+          equipment_name?: string
+          equipment_type?: string
+          features?: string[] | null
+          hourly_rate?: number | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          model?: string | null
+          photos?: string[] | null
+          power_capacity?: string | null
+          provider_id?: string
+          state?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_listings_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expert_farmer_profiles: {
+        Row: {
+          availability_status: string
+          bio: string | null
+          certifications: string[] | null
+          consultation_fee: number | null
+          consultation_modes: string[] | null
+          created_at: string
+          experience_years: number | null
+          expertise_areas: string[]
+          id: string
+          is_active: boolean
+          is_verified_expert: boolean
+          languages: string[] | null
+          provider_id: string
+          qualifications: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          availability_status?: string
+          bio?: string | null
+          certifications?: string[] | null
+          consultation_fee?: number | null
+          consultation_modes?: string[] | null
+          created_at?: string
+          experience_years?: number | null
+          expertise_areas: string[]
+          id?: string
+          is_active?: boolean
+          is_verified_expert?: boolean
+          languages?: string[] | null
+          provider_id: string
+          qualifications?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          availability_status?: string
+          bio?: string | null
+          certifications?: string[] | null
+          consultation_fee?: number | null
+          consultation_modes?: string[] | null
+          created_at?: string
+          experience_years?: number | null
+          expertise_areas?: string[]
+          id?: string
+          is_active?: boolean
+          is_verified_expert?: boolean
+          languages?: string[] | null
+          provider_id?: string
+          qualifications?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_farmer_profiles_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fpo_provider_profiles: {
+        Row: {
+          contact_person: string | null
+          contact_phone: string | null
+          created_at: string
+          crops_handled: string[] | null
+          description: string | null
+          fpo_name: string
+          id: string
+          is_active: boolean
+          member_count: number | null
+          operating_areas: string[] | null
+          provider_id: string
+          registration_number: string | null
+          services_offered: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          contact_person?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          crops_handled?: string[] | null
+          description?: string | null
+          fpo_name: string
+          id?: string
+          is_active?: boolean
+          member_count?: number | null
+          operating_areas?: string[] | null
+          provider_id: string
+          registration_number?: string | null
+          services_offered?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          contact_person?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          crops_handled?: string[] | null
+          description?: string | null
+          fpo_name?: string
+          id?: string
+          is_active?: boolean
+          member_count?: number | null
+          operating_areas?: string[] | null
+          provider_id?: string
+          registration_number?: string | null
+          services_offered?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fpo_provider_profiles_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kyc_documents: {
         Row: {
           created_at: string
@@ -140,6 +335,137 @@ export type Database = {
         }
         Relationships: []
       }
+      providers: {
+        Row: {
+          address: string | null
+          approval_status: Database["public"]["Enums"]["approval_status"]
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          district: string | null
+          email: string | null
+          full_name: string
+          id: string
+          identity_proof_type: string | null
+          identity_proof_url: string | null
+          latitude: number | null
+          longitude: number | null
+          phone_number: string
+          phone_verified: boolean
+          pincode: string | null
+          profile_photo_url: string | null
+          provider_type: Database["public"]["Enums"]["provider_type"]
+          rejection_reason: string | null
+          state: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          approval_status?: Database["public"]["Enums"]["approval_status"]
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          district?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          identity_proof_type?: string | null
+          identity_proof_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          phone_number: string
+          phone_verified?: boolean
+          pincode?: string | null
+          profile_photo_url?: string | null
+          provider_type: Database["public"]["Enums"]["provider_type"]
+          rejection_reason?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          approval_status?: Database["public"]["Enums"]["approval_status"]
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          district?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          identity_proof_type?: string | null
+          identity_proof_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          phone_number?: string
+          phone_verified?: boolean
+          pincode?: string | null
+          profile_photo_url?: string | null
+          provider_type?: Database["public"]["Enums"]["provider_type"]
+          rejection_reason?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      skilled_farmer_profiles: {
+        Row: {
+          availability_status: string
+          bio: string | null
+          created_at: string
+          daily_rate: number | null
+          experience_years: number | null
+          hourly_rate: number | null
+          id: string
+          is_active: boolean
+          languages: string[] | null
+          provider_id: string
+          skills: string[]
+          specialties: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          availability_status?: string
+          bio?: string | null
+          created_at?: string
+          daily_rate?: number | null
+          experience_years?: number | null
+          hourly_rate?: number | null
+          id?: string
+          is_active?: boolean
+          languages?: string[] | null
+          provider_id: string
+          skills: string[]
+          specialties?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          availability_status?: string
+          bio?: string | null
+          created_at?: string
+          daily_rate?: number | null
+          experience_years?: number | null
+          hourly_rate?: number | null
+          id?: string
+          is_active?: boolean
+          languages?: string[] | null
+          provider_id?: string
+          skills?: string[]
+          specialties?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skilled_farmer_profiles_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -148,7 +474,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      approval_status: "pending" | "approved" | "rejected"
+      provider_type:
+        | "equipment_owner"
+        | "skilled_farmer"
+        | "expert_farmer"
+        | "fpo_provider"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -275,6 +606,14 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      approval_status: ["pending", "approved", "rejected"],
+      provider_type: [
+        "equipment_owner",
+        "skilled_farmer",
+        "expert_farmer",
+        "fpo_provider",
+      ],
+    },
   },
 } as const
