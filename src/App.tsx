@@ -25,6 +25,8 @@ import FPO from "./pages/FPO";
 import FAQs from "./pages/FAQs";
 import NotFound from "./pages/NotFound";
 import JoinProvider from "./pages/JoinProvider";
+import ProviderDashboard from "./pages/ProviderDashboard";
+import AdminPanel from "./pages/AdminPanel";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +57,8 @@ const App = () => (
                 <Route path="/fpo" element={<ProtectedRoute><FPO /></ProtectedRoute>} />
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/join-provider" element={<JoinProvider />} />
+                <Route path="/provider-dashboard" element={<ProtectedRoute><ProviderDashboard /></ProtectedRoute>} />
+                <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>

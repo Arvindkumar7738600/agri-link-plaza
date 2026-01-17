@@ -178,6 +178,20 @@ const Header = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                 </Link>
               ))}
+              
+              {/* Mobile Join Provider Button */}
+              <Button 
+                asChild 
+                className="mx-2 rounded-lg font-semibold shadow-lg"
+                style={{ background: 'var(--gradient-primary)' }}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Link to="/join-provider" className="flex items-center justify-center gap-2">
+                  <UserPlus className="h-4 w-4" />
+                  Join as Provider
+                </Link>
+              </Button>
+              
               <div className="pt-4 mx-2 border-t border-border/50">
                 {isAuthenticated && user ? (
                   <>
