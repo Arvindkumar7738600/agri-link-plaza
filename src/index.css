@@ -126,3 +126,47 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom toast animations for KisanSevaPlus */
+@layer utilities {
+  .login-required-toast,
+  .otp-sent-toast {
+    animation: toast-slide-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes toast-slide-pop {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
+    }
+    50% {
+      transform: translateY(5px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Soft glow effect for toasts */
+  [data-sonner-toast] {
+    box-shadow: 
+      0 8px 32px rgba(158, 189, 19, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  [data-sonner-toast][data-type="error"] {
+    box-shadow: 
+      0 8px 32px rgba(239, 68, 68, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  [data-sonner-toast][data-type="success"] {
+    box-shadow: 
+      0 8px 32px rgba(158, 189, 19, 0.35),
+      0 0 0 1px rgba(255, 255, 255, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+}

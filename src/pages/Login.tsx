@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Mail, ArrowRight, CheckCircle, Loader2, AlertCircle, User, Lock, Eye, EyeOff, KeyRound } from "lucide-react";
+import { Mail, ArrowRight, CheckCircle, Loader2, AlertCircle, User, Lock, Eye, EyeOff, KeyRound, Bell, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,7 +28,6 @@ const Login = () => {
   const [forgotEmail, setForgotEmail] = useState("");
   const [isSendingReset, setIsSendingReset] = useState(false);
   
-  const { toast } = useToast();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
@@ -83,18 +82,36 @@ const Login = () => {
       setIsOtpSent(true);
       setResendTimer(60);
       
-      toast({
-        title: "OTP Sent Successfully",
-        description: `Verification code sent to ${email}`,
-      });
+      // Show beautiful OTP notification
+      toast(
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center animate-pulse">
+            <Bell className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-sm text-white flex items-center gap-2">
+              ✉️ OTP Bhej Diya Gaya!
+            </p>
+            <p className="text-xs text-white/90 mt-1">
+              Check karein: <span className="font-medium">{email}</span>
+            </p>
+            <div className="mt-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 border border-white/20">
+              <p className="text-[10px] text-white/70 uppercase tracking-wide">Email inbox mein dekhein</p>
+              <p className="text-xs text-white/90 mt-0.5">6-digit code enter karein neeche</p>
+            </div>
+          </div>
+        </div>,
+        {
+          duration: 8000,
+          className: "otp-sent-toast",
+        }
+      );
     } catch (error: any) {
       if (error.message?.includes("Signups not allowed")) {
         setEmailError("Account not found. Please sign up first.");
       } else {
-        toast({
-          title: "Failed to Send OTP",
+        toast.error("Failed to Send OTP", {
           description: error.message || "Please try again later",
-          variant: "destructive",
         });
       }
     } finally {
@@ -121,18 +138,15 @@ const Login = () => {
       
       if (error) throw error;
       
-      toast({
-        title: "Login Successful",
+      toast.success("Login Successful", {
         description: "Welcome to KisanSeva Plus!",
       });
       
       navigate('/dashboard');
     } catch (error: any) {
       setOtpError("Invalid OTP. Please try again.");
-      toast({
-        title: "Invalid OTP",
+      toast.error("Invalid OTP", {
         description: error.message || "Please check and enter the correct OTP",
-        variant: "destructive",
       });
     } finally {
       setIsVerifying(false);
@@ -173,24 +187,19 @@ const Login = () => {
 
       if (error) throw error;
       
-      toast({
-        title: "Login Successful",
+      toast.success("Login Successful", {
         description: "Welcome to KisanSeva Plus!",
       });
       
       navigate('/dashboard');
     } catch (error: any) {
       if (error.message?.includes("Invalid login credentials")) {
-        toast({
-          title: "Login Failed",
+        toast.error("Login Failed", {
           description: "Invalid email or password. Please try again.",
-          variant: "destructive",
         });
       } else {
-        toast({
-          title: "Login Failed",
+        toast.error("Login Failed", {
           description: error.message || "Please try again later",
-          variant: "destructive",
         });
       }
     } finally {
@@ -215,15 +224,12 @@ const Login = () => {
       if (error) throw error;
       
       setResendTimer(60);
-      toast({
-        title: "OTP Resent",
+      toast.success("OTP Resent", {
         description: "New verification code sent to your email",
       });
     } catch (error: any) {
-      toast({
-        title: "Failed to Resend OTP",
+      toast.error("Failed to Resend OTP", {
         description: error.message || "Please try again",
-        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -232,19 +238,15 @@ const Login = () => {
 
   const handleForgotPassword = async () => {
     if (!forgotEmail) {
-      toast({
-        title: "Email Required",
+      toast.error("Email Required", {
         description: "Please enter your email address",
-        variant: "destructive",
       });
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(forgotEmail)) {
-      toast({
-        title: "Invalid Email",
+      toast.error("Invalid Email", {
         description: "Please enter a valid email address",
-        variant: "destructive",
       });
       return;
     }
@@ -258,17 +260,14 @@ const Login = () => {
 
       if (error) throw error;
       
-      toast({
-        title: "Reset Link Sent",
+      toast.success("Reset Link Sent", {
         description: "Check your email for the password reset link",
       });
       setShowForgotPassword(false);
       setForgotEmail("");
     } catch (error: any) {
-      toast({
-        title: "Failed to Send Reset Link",
+      toast.error("Failed to Send Reset Link", {
         description: error.message || "Please try again later",
-        variant: "destructive",
       });
     } finally {
       setIsSendingReset(false);
