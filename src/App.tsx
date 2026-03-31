@@ -15,6 +15,7 @@ import About from "./pages/About";
 import Services from "./pages/Services";
 import Booking from "./pages/Booking";
 import BookingDetails from "./pages/BookingDetails";
+import OrderDetails from "./pages/OrderDetails";
 import Farmers from "./pages/Farmers";
 import HireFarmerDetails from "./pages/HireFarmerDetails";
 import Contact from "./pages/Contact";
