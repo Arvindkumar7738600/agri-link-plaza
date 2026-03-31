@@ -15,6 +15,7 @@ import About from "./pages/About";
 import Services from "./pages/Services";
 import Booking from "./pages/Booking";
 import BookingDetails from "./pages/BookingDetails";
+import OrderDetails from "./pages/OrderDetails";
 import Farmers from "./pages/Farmers";
 import HireFarmerDetails from "./pages/HireFarmerDetails";
 import Contact from "./pages/Contact";
@@ -52,6 +53,7 @@ const App = () => (
                 <Route path="/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
                 <Route path="/booking" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
                 <Route path="/booking-details" element={<ProtectedRoute><BookingDetails /></ProtectedRoute>} />
+                <Route path="/order-details" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
                 <Route path="/farmers" element={<ProtectedRoute><Farmers /></ProtectedRoute>} />
                 <Route path="/hire-farmer-details" element={<ProtectedRoute><HireFarmerDetails /></ProtectedRoute>} />
                 <Route path="/fpo" element={<ProtectedRoute><FPO /></ProtectedRoute>} />
