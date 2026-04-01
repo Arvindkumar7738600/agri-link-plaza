@@ -266,6 +266,63 @@ export type Database = {
           },
         ]
       }
+      hires: {
+        Row: {
+          client_address: string | null
+          client_name: string
+          client_phone: string
+          created_at: string
+          duration_type: string
+          farmer_location: string | null
+          farmer_name: string
+          farmer_skills: string[] | null
+          hire_date: string
+          hire_time: string
+          id: string
+          rate: string | null
+          special_requirements: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_address?: string | null
+          client_name: string
+          client_phone: string
+          created_at?: string
+          duration_type?: string
+          farmer_location?: string | null
+          farmer_name: string
+          farmer_skills?: string[] | null
+          hire_date: string
+          hire_time: string
+          id?: string
+          rate?: string | null
+          special_requirements?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_address?: string | null
+          client_name?: string
+          client_phone?: string
+          created_at?: string
+          duration_type?: string
+          farmer_location?: string | null
+          farmer_name?: string
+          farmer_skills?: string[] | null
+          hire_date?: string
+          hire_time?: string
+          id?: string
+          rate?: string | null
+          special_requirements?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kyc_documents: {
         Row: {
           created_at: string
