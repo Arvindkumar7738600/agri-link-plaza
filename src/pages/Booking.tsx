@@ -37,7 +37,7 @@ const Booking = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const categories = ["All Equipment", "Tractor", "Harvester", "Tiller", "Sprayer", "Plough", "Cultivator"];
+  const categories = ["All Equipment", "Tractor", "Harvester", "Tiller", "Sprayer", "Plough", "Cultivator", "Planters", "Weeding", "Fodder", "Trailers", "Irrigation", "Accessories", "Precision Farming"];
 
   useEffect(() => {
     fetchEquipment();
