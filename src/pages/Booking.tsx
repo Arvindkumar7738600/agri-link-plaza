@@ -279,6 +279,18 @@ const Booking = () => {
                 </Card>
               ))}
             </div>
+            {hasMore && (
+              <div className="flex justify-center mt-8">
+                <Button 
+                  onClick={() => setVisibleCount(prev => prev + 9)}
+                  variant="outline"
+                  size="lg"
+                  className="border-green-600 text-green-600 hover:bg-green-50 px-8"
+                >
+                  Load More Equipment ({filteredEquipment.length - visibleCount} remaining)
+                </Button>
+              </div>
+            )}
           )}
         </div>
       </section>
