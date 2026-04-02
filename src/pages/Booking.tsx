@@ -291,6 +291,7 @@ const Booking = () => {
                 </Button>
               </div>
             )}
+          </>
           )}
         </div>
       </section>
