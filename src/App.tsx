@@ -18,6 +18,7 @@ import BookingDetails from "./pages/BookingDetails";
 import OrderDetails from "./pages/OrderDetails";
 import Farmers from "./pages/Farmers";
 import HireFarmerDetails from "./pages/HireFarmerDetails";
+import HireOrderDetails from "./pages/HireOrderDetails";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
