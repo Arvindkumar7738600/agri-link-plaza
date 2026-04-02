@@ -348,8 +348,8 @@ const Farmers = () => {
                   </Button>
                 </div>
               )}
+              </>
             )
-          ) : (
             /* Expert Farmers Grid */
             expertFarmers.length === 0 ? (
               <div className="text-center py-12">
