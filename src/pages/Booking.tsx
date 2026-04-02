@@ -101,9 +101,19 @@ const Booking = () => {
     navigate("/booking-details", { state: { equipment: equipmentData } });
   };
 
+  const [visibleCount, setVisibleCount] = useState(9);
+
   const filteredEquipment = selectedCategory === "All Equipment" 
     ? equipment 
     : equipment.filter(item => item.equipment_type.toLowerCase() === selectedCategory.toLowerCase());
+
+  const visibleEquipment = filteredEquipment.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredEquipment.length;
+
+  // Reset visible count when category changes
+  useEffect(() => {
+    setVisibleCount(9);
+  }, [selectedCategory]);
 
   return (
     <div className="min-h-screen pt-16">
@@ -172,8 +182,9 @@ const Booking = () => {
               <p className="text-muted-foreground">No equipment found. Check back later or try a different category.</p>
             </div>
           ) : (
+            <>
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredEquipment.map((item) => (
+              {visibleEquipment.map((item) => (
                 <Card key={item.id} className="hover:shadow-lg transition-shadow bg-white border border-gray-200">
                   <CardHeader className="pb-4">
                     <div className="flex items-start justify-between">
@@ -269,6 +280,19 @@ const Booking = () => {
                 </Card>
               ))}
             </div>
+            {hasMore && (
+              <div className="flex justify-center mt-8">
+                <Button 
+                  onClick={() => setVisibleCount(prev => prev + 9)}
+                  variant="outline"
+                  size="lg"
+                  className="border-green-600 text-green-600 hover:bg-green-50 px-8"
+                >
+                  Load More Equipment ({filteredEquipment.length - visibleCount} remaining)
+                </Button>
+              </div>
+            )}
+          </>
           )}
         </div>
       </section>

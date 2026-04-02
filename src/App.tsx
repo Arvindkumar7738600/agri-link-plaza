@@ -18,6 +18,7 @@ import BookingDetails from "./pages/BookingDetails";
 import OrderDetails from "./pages/OrderDetails";
 import Farmers from "./pages/Farmers";
 import HireFarmerDetails from "./pages/HireFarmerDetails";
+import HireOrderDetails from "./pages/HireOrderDetails";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -56,6 +57,7 @@ const App = () => (
                 <Route path="/order-details" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
                 <Route path="/farmers" element={<ProtectedRoute><Farmers /></ProtectedRoute>} />
                 <Route path="/hire-farmer-details" element={<ProtectedRoute><HireFarmerDetails /></ProtectedRoute>} />
+                <Route path="/hire-order-details" element={<ProtectedRoute><HireOrderDetails /></ProtectedRoute>} />
                 <Route path="/fpo" element={<ProtectedRoute><FPO /></ProtectedRoute>} />
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/join-provider" element={<JoinProvider />} />

@@ -115,11 +115,19 @@ const Farmers = () => {
     }
   };
 
+  const [visibleSkilledCount, setVisibleSkilledCount] = useState(9);
+  const [visibleExpertCount, setVisibleExpertCount] = useState(9);
+
   const filteredSkilledFarmers = selectedSkill === "all" 
     ? skilledFarmers 
     : skilledFarmers.filter(farmer => 
         farmer.skills.some(skill => skill.toLowerCase().includes(selectedSkill.toLowerCase()))
       );
+
+  const visibleSkilledFarmers = filteredSkilledFarmers.slice(0, visibleSkilledCount);
+  const hasMoreSkilled = visibleSkilledCount < filteredSkilledFarmers.length;
+  const visibleExpertFarmersArr = expertFarmers.slice(0, visibleExpertCount);
+  const hasMoreExpert = visibleExpertCount < expertFarmers.length;
 
   return (
     <div className="min-h-screen pt-8">
@@ -209,8 +217,9 @@ const Farmers = () => {
                 <p className="text-muted-foreground">No skilled farmers found. Check back later!</p>
               </div>
             ) : (
+              <>
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredSkilledFarmers.map((farmer) => (
+                {visibleSkilledFarmers.map((farmer) => (
                   <Card key={farmer.id} className="hover:shadow-elevated transition-shadow bg-card">
                     <CardHeader className="pb-4">
                       <div className="flex items-start justify-between">
@@ -332,16 +341,24 @@ const Farmers = () => {
                   </Card>
                 ))}
               </div>
+              {hasMoreSkilled && (
+                <div className="flex justify-center mt-8">
+                  <Button onClick={() => setVisibleSkilledCount(prev => prev + 9)} variant="outline" size="lg" className="px-8">
+                    Load More Farmers ({filteredSkilledFarmers.length - visibleSkilledCount} remaining)
+                  </Button>
+                </div>
+              )}
+              </>
             )
           ) : (
-            /* Expert Farmers Grid */
             expertFarmers.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">No expert farmers found. Check back later!</p>
               </div>
             ) : (
+              <>
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {expertFarmers.map((farmer) => (
+                {visibleExpertFarmersArr.map((farmer) => (
                   <Card key={farmer.id} className="hover:shadow-elevated transition-shadow bg-card border-2 border-primary/20">
                     <CardHeader className="pb-4">
                       <div className="flex items-start justify-between">
@@ -430,6 +447,14 @@ const Farmers = () => {
                   </Card>
                 ))}
               </div>
+              {hasMoreExpert && (
+                <div className="flex justify-center mt-8">
+                  <Button onClick={() => setVisibleExpertCount(prev => prev + 9)} variant="outline" size="lg" className="px-8">
+                    Load More Expert Farmers ({expertFarmers.length - visibleExpertCount} remaining)
+                  </Button>
+                </div>
+              )}
+              </>
             )
           )}
         </div>
