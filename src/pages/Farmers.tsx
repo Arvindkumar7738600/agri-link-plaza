@@ -115,11 +115,19 @@ const Farmers = () => {
     }
   };
 
+  const [visibleSkilledCount, setVisibleSkilledCount] = useState(9);
+  const [visibleExpertCount, setVisibleExpertCount] = useState(9);
+
   const filteredSkilledFarmers = selectedSkill === "all" 
     ? skilledFarmers 
     : skilledFarmers.filter(farmer => 
         farmer.skills.some(skill => skill.toLowerCase().includes(selectedSkill.toLowerCase()))
       );
+
+  const visibleSkilledFarmers = filteredSkilledFarmers.slice(0, visibleSkilledCount);
+  const hasMoreSkilled = visibleSkilledCount < filteredSkilledFarmers.length;
+  const visibleExpertFarmersArr = expertFarmers.slice(0, visibleExpertCount);
+  const hasMoreExpert = visibleExpertCount < expertFarmers.length;
 
   return (
     <div className="min-h-screen pt-8">
