@@ -447,6 +447,14 @@ const Farmers = () => {
                   </Card>
                 ))}
               </div>
+              {hasMoreExpert && (
+                <div className="flex justify-center mt-8">
+                  <Button onClick={() => setVisibleExpertCount(prev => prev + 9)} variant="outline" size="lg" className="px-8">
+                    Load More Expert Farmers ({expertFarmers.length - visibleExpertCount} remaining)
+                  </Button>
+                </div>
+              )}
+              </>
             )
           )}
         </div>
