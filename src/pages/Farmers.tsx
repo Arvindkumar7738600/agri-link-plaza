@@ -350,7 +350,7 @@ const Farmers = () => {
               )}
               </>
             )
-            /* Expert Farmers Grid */
+          ) : (
             expertFarmers.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">No expert farmers found. Check back later!</p>
