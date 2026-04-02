@@ -356,7 +356,7 @@ const Farmers = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {expertFarmers.map((farmer) => (
+                {visibleExpertFarmersArr.map((farmer) => (
                   <Card key={farmer.id} className="hover:shadow-elevated transition-shadow bg-card border-2 border-primary/20">
                     <CardHeader className="pb-4">
                       <div className="flex items-start justify-between">
