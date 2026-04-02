@@ -101,9 +101,19 @@ const Booking = () => {
     navigate("/booking-details", { state: { equipment: equipmentData } });
   };
 
+  const [visibleCount, setVisibleCount] = useState(9);
+
   const filteredEquipment = selectedCategory === "All Equipment" 
     ? equipment 
     : equipment.filter(item => item.equipment_type.toLowerCase() === selectedCategory.toLowerCase());
+
+  const visibleEquipment = filteredEquipment.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredEquipment.length;
+
+  // Reset visible count when category changes
+  useEffect(() => {
+    setVisibleCount(9);
+  }, [selectedCategory]);
 
   return (
     <div className="min-h-screen pt-16">
