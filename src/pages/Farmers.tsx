@@ -340,6 +340,13 @@ const Farmers = () => {
                   </Card>
                 ))}
               </div>
+              {hasMoreSkilled && (
+                <div className="flex justify-center mt-8">
+                  <Button onClick={() => setVisibleSkilledCount(prev => prev + 9)} variant="outline" size="lg" className="px-8">
+                    Load More Farmers ({filteredSkilledFarmers.length - visibleSkilledCount} remaining)
+                  </Button>
+                </div>
+              )}
             )
           ) : (
             /* Expert Farmers Grid */
