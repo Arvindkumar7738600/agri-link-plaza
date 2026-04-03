@@ -48,7 +48,7 @@ interface HireRow {
 }
 
 const Dashboard = () => {
-  const { user, logout, updateUser } = useAuth();
+  const { user, session, loading, logout, updateUser } = useAuth();
   const navigate = useNavigate();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [bookings, setBookings] = useState<BookingRow[]>([]);
@@ -57,9 +57,14 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<'bookings' | 'hires'>('bookings');
 
   useEffect(() => {
-    if (!user) { navigate('/login'); return; }
-    fetchData();
-  }, [user]);
+    if (loading) return;
+    if (!session) {
+      navigate('/login');
+      return;
+    }
+    if (!user) return;
+    void fetchData();
+  }, [loading, session, user, navigate]);
 
   const fetchData = async () => {
     try {
@@ -78,7 +83,20 @@ const Dashboard = () => {
     }
   };
 
-  if (!user) return null;
+  if (loading || (session && !user)) {
+    return (
+      <div className="min-h-screen bg-background pt-20">
+        <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Dashboard load ho raha hai...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session || !user) return null;
 
   const handleLogout = () => { logout(); navigate('/login'); };
   const handleProfileUpdate = (updatedData: any) => { if (updateUser) updateUser(updatedData); };
