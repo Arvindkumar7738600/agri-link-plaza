@@ -204,7 +204,12 @@ const BookingDetails = () => {
               </div>
 
               {/* Equipment Image Gallery */}
-              <EquipmentImageGallery isProvider={true} userId={user?.id} />
+              <EquipmentImageGallery 
+                isProvider={!!equipment.equipmentId} 
+                equipmentId={equipment.equipmentId} 
+                providerId={equipment.providerId}
+                userId={user?.id} 
+              />
 
               {/* Pricing Summary */}
               <div className="bg-green-50 p-4 rounded-lg mt-6">

@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { MessageCircle, X, Send, Bot, User, Loader2, Sparkles, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 type Message = {
   role: "user" | "assistant";
@@ -11,19 +12,61 @@ type Message = {
 };
 
 const CHAT_URL = "https://riykcdgldcphjntuiihl.supabase.co/functions/v1/chat";
+const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpeWtjZGdsZGNwaGpudHVpaWhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc3NjY5NDUsImV4cCI6MjA3MzM0Mjk0NX0.Vn3B_4IFWTJQ2Jo-PI8Jbtfze3a2g8rFD3PnW9o2dVM";
+
+const GREETING: Message = {
+  role: "assistant",
+  content: "🙏 Namaste! Mai KisanSeva Plus AI Assistant hoon. Aap mujhse equipment booking, farmer services, ya kisi bhi farming related sawaal pooch sakte hain. Kaise madad kar sakta hoon?",
+};
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: "🙏 Namaste! Mai KisanSeva Plus AI Assistant hoon. Aap mujhse equipment booking, farmer services, ya kisi bhi farming related sawaal pooch sakte hain. Kaise madad kar sakta hoon?",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([GREETING]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Load chat history from DB on open
+  const loadHistory = useCallback(async () => {
+    if (historyLoaded) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setHistoryLoaded(true); return; }
+
+    // Get latest session
+    const { data } = await supabase
+      .from("chat_messages" as any)
+      .select("session_id, role, content, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    const latestSession = (data as any[])?.[0]?.session_id;
+    if (!latestSession) { setHistoryLoaded(true); return; }
+
+    setSessionId(latestSession);
+
+    const { data: history } = await supabase
+      .from("chat_messages" as any)
+      .select("role, content")
+      .eq("user_id", user.id)
+      .eq("session_id", latestSession)
+      .order("created_at", { ascending: true });
+
+    if (history && (history as any[]).length > 0) {
+      setMessages([GREETING, ...(history as any[]).map((m: any) => ({ role: m.role as "user" | "assistant", content: m.content }))]);
+    }
+    setHistoryLoaded(true);
+  }, [historyLoaded]);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadHistory();
+      inputRef.current?.focus();
+    }
+  }, [isOpen, loadHistory]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -31,25 +74,25 @@ const ChatBot = () => {
     }
   }, [messages]);
 
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isOpen]);
+  const saveMessage = async (msg: Message, sid: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase.from("chat_messages" as any).insert({
+      user_id: user.id,
+      session_id: sid,
+      role: msg.role,
+      content: msg.content,
+    } as any);
+  };
 
-  const streamChat = async (userMessages: Message[]) => {
+  const streamChat = async (userMessages: Message[], currentSessionId: string) => {
     const resp = await fetch(CHAT_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpeWtjZGdsZGNwaGpudHVpaWhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc3NjY5NDUsImV4cCI6MjA3MzM0Mjk0NX0.Vn3B_4IFWTJQ2Jo-PI8Jbtfze3a2g8rFD3PnW9o2dVM`,
-      },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${ANON_KEY}` },
       body: JSON.stringify({ messages: userMessages }),
     });
 
-    if (!resp.ok || !resp.body) {
-      throw new Error("Failed to start stream");
-    }
+    if (!resp.ok || !resp.body) throw new Error("Failed to start stream");
 
     const reader = resp.body.getReader();
     const decoder = new TextDecoder();
@@ -81,9 +124,7 @@ const ChatBot = () => {
             setMessages((prev) => {
               const last = prev[prev.length - 1];
               if (last?.role === "assistant" && prev.length > 1) {
-                return prev.map((m, i) =>
-                  i === prev.length - 1 ? { ...m, content: assistantContent } : m
-                );
+                return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: assistantContent } : m);
               }
               return [...prev, { role: "assistant", content: assistantContent }];
             });
@@ -93,6 +134,11 @@ const ChatBot = () => {
           break;
         }
       }
+    }
+
+    // Save assistant reply to DB
+    if (assistantContent) {
+      await saveMessage({ role: "assistant", content: assistantContent }, currentSessionId);
     }
   };
 
@@ -105,17 +151,23 @@ const ChatBot = () => {
     setInput("");
     setIsLoading(true);
 
+    // Create or reuse session
+    let sid = sessionId;
+    if (!sid) {
+      sid = crypto.randomUUID();
+      setSessionId(sid);
+    }
+
+    // Save user message
+    await saveMessage(userMessage, sid);
+
     try {
-      await streamChat(newMessages.slice(1)); // Skip the initial greeting
+      await streamChat(newMessages.slice(1), sid); // Skip greeting
     } catch (error) {
       console.error("Chat error:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "Maaf kijiye, kuch technical problem aa gayi. Please thodi der baad try karein.",
-        },
-      ]);
+      const errMsg: Message = { role: "assistant", content: "Maaf kijiye, kuch technical problem aa gayi. Please thodi der baad try karein." };
+      setMessages((prev) => [...prev, errMsg]);
+      await saveMessage(errMsg, sid);
     } finally {
       setIsLoading(false);
     }
@@ -128,9 +180,14 @@ const ChatBot = () => {
     }
   };
 
+  const handleNewChat = () => {
+    setSessionId(null);
+    setMessages([GREETING]);
+    setHistoryLoaded(true);
+  };
+
   return (
     <>
-      {/* Chat Toggle Button */}
       <Button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
@@ -143,20 +200,16 @@ const ChatBot = () => {
         <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 animate-pulse" />
       </Button>
 
-      {/* Chat Window */}
       <div
         className={cn(
           "fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-48px)] rounded-2xl shadow-2xl transition-all duration-500 ease-out",
           "bg-gradient-to-br from-card/95 to-card backdrop-blur-xl border border-border/50",
-          isOpen
-            ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-8 scale-95 pointer-events-none"
+          isOpen ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95 pointer-events-none"
         )}
         style={{ maxHeight: "calc(100vh - 120px)" }}
       >
         {/* Header */}
         <div className="relative overflow-hidden rounded-t-2xl bg-gradient-to-r from-primary to-secondary p-4">
-          <div className="absolute inset-0 bg-[url('/src/assets/hero-agriculture.jpg')] opacity-10 bg-cover bg-center" />
           <div className="relative flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="relative">
@@ -174,20 +227,13 @@ const ChatBot = () => {
               </div>
             </div>
             <div className="flex gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsOpen(false)}
-                className="h-8 w-8 rounded-full text-white/80 hover:text-white hover:bg-white/20"
-              >
+              <Button variant="ghost" size="sm" onClick={handleNewChat} className="h-8 rounded-full text-white/80 hover:text-white hover:bg-white/20 text-xs px-2">
+                New Chat
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full text-white/80 hover:text-white hover:bg-white/20">
                 <Minimize2 className="h-4 w-4" />
               </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsOpen(false)}
-                className="h-8 w-8 rounded-full text-white/80 hover:text-white hover:bg-white/20"
-              >
+              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full text-white/80 hover:text-white hover:bg-white/20">
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -195,32 +241,21 @@ const ChatBot = () => {
         </div>
 
         {/* Messages */}
-        <ScrollArea
-          ref={scrollAreaRef}
-          className="h-[350px] p-4 space-y-4"
-        >
+        <ScrollArea ref={scrollAreaRef} className="h-[350px] p-4 space-y-4">
           <div className="space-y-4">
             {messages.map((message, index) => (
-              <div
-                key={index}
-                className={cn(
-                  "flex gap-2 animate-fade-in",
-                  message.role === "user" ? "justify-end" : "justify-start"
-                )}
-              >
+              <div key={index} className={cn("flex gap-2 animate-fade-in", message.role === "user" ? "justify-end" : "justify-start")}>
                 {message.role === "assistant" && (
                   <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0">
                     <Bot className="h-4 w-4 text-primary" />
                   </div>
                 )}
-                <div
-                  className={cn(
-                    "max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
-                    message.role === "user"
-                      ? "bg-gradient-to-r from-primary to-secondary text-white rounded-br-md"
-                      : "bg-muted text-foreground rounded-bl-md"
-                  )}
-                >
+                <div className={cn(
+                  "max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+                  message.role === "user"
+                    ? "bg-gradient-to-r from-primary to-secondary text-white rounded-br-md"
+                    : "bg-muted text-foreground rounded-bl-md"
+                )}>
                   {message.content}
                 </div>
                 {message.role === "user" && (
@@ -279,11 +314,7 @@ const ChatBot = () => {
               disabled={!input.trim() || isLoading}
               className="h-10 w-10 rounded-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
             >
-              {isLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="h-4 w-4" />
-              )}
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </Button>
           </div>
           <p className="text-[10px] text-muted-foreground text-center mt-2">
