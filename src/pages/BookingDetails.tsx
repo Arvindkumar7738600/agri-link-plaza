@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Calendar, Clock, MapPin, Star, ArrowLeft } from "lucide-react";
+import EquipmentImageGallery from "@/components/EquipmentImageGallery";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -201,6 +202,9 @@ const BookingDetails = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Equipment Image Gallery */}
+              <EquipmentImageGallery isProvider={true} userId={user?.id} />
 
               {/* Pricing Summary */}
               <div className="bg-green-50 p-4 rounded-lg mt-6">
