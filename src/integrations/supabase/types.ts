@@ -71,6 +71,75 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          session_id?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      equipment_images: {
+        Row: {
+          created_at: string
+          display_order: number
+          equipment_listing_id: string
+          id: string
+          image_url: string
+          provider_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          equipment_listing_id: string
+          id?: string
+          image_url: string
+          provider_id: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          equipment_listing_id?: string
+          id?: string
+          image_url?: string
+          provider_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_images_equipment_listing_id_fkey"
+            columns: ["equipment_listing_id"]
+            isOneToOne: false
+            referencedRelation: "equipment_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipment_images_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       equipment_listings: {
         Row: {
           availability_status: string
