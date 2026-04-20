@@ -19,6 +19,32 @@ const GREETING: Message = {
   content: "🙏 Namaste! Mai KisanSeva Plus AI Assistant hoon. Aap mujhse equipment booking, farmer services, ya kisi bhi farming related sawaal pooch sakte hain. Kaise madad kar sakta hoon?",
 };
 
+const getKnownAnswer = (message: string) => {
+  const normalized = message.toLowerCase().replace(/0/g, "o").trim();
+
+  const asksCoFounder =
+    normalized.includes("co-founder") ||
+    normalized.includes("co founder") ||
+    normalized.includes("cofounder") ||
+    normalized.includes("aman raj");
+
+  if (asksCoFounder) {
+    return "Aman Raj from IIT Madras is the Co-Founder of KisanSeva Plus.";
+  }
+
+  const asksFounder =
+    normalized.includes("founder") ||
+    normalized.includes("sansthapak") ||
+    normalized.includes("संस्थापक") ||
+    normalized.includes("arvind kumar");
+
+  if (asksFounder) {
+    return "Arvind Kumar from IIT Madras is the Founder of KisanSeva Plus.";
+  }
+
+  return null;
+};
+
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([GREETING]);
