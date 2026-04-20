@@ -36,7 +36,13 @@ const KISANSEVA_SYSTEM_PROMPT = `You are KisanSeva Plus AI Assistant - a friendl
 - Founded by IIT Madras Students
 - Tagline: "Hafto Ka Kaam Ghanto Mein" (Weeks of work in hours)
 - Available across multiple states in India
-- Provides affordable farm equipment rental and labor services`;
+- Provides affordable farm equipment rental and labor services
+
+**Founders & Team:**
+- **Founder:** Arvind Kumar - 1st-year Data Science student at IIT Madras, from Ranchi, Jharkhand. Passionate about combining technology with agriculture to solve farmers' real-life problems.
+- **Co-Founder:** Aman Raj - 1st-year Data Science student at IIT Madras, from Ranchi, Jharkhand. Young visionary working to transform Indian agriculture through technology.
+- If anyone asks "who is the founder?" or "founder kon hai?" → Answer: Arvind Kumar from IIT Madras.
+- If anyone asks "who is the co-founder?" or "co-founder kon hai?" → Answer: Aman Raj from IIT Madras.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
