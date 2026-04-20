@@ -173,21 +173,27 @@ const ChatBot = () => {
 
     const userMessage: Message = { role: "user", content: input.trim() };
     const newMessages = [...messages, userMessage];
+    const knownAnswer = getKnownAnswer(userMessage.content);
     setMessages(newMessages);
     setInput("");
     setIsLoading(true);
 
-    // Create or reuse session
     let sid = sessionId;
     if (!sid) {
       sid = crypto.randomUUID();
       setSessionId(sid);
     }
 
-    // Save user message
     await saveMessage(userMessage, sid);
 
     try {
+      if (knownAnswer) {
+        const assistantMessage: Message = { role: "assistant", content: knownAnswer };
+        setMessages((prev) => [...prev, assistantMessage]);
+        await saveMessage(assistantMessage, sid);
+        return;
+      }
+
       await streamChat(newMessages.slice(1), sid); // Skip greeting
     } catch (error) {
       console.error("Chat error:", error);
